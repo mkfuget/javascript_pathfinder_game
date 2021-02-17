@@ -1,0 +1,2 @@
+rails g resource board width:integer height:integer 
+rails g resource cell type x_coord:integer y_coord:integer
