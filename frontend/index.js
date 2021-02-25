@@ -12,6 +12,21 @@ class Board {
         {
             for(let j=0; j<width; j++)
             {
+                switch(boardData[i][j])
+                {
+                    case 0:
+                        this.boardCells[i][j] = new EmptyCell(j, i)
+                        break;
+                    case 1:
+                        this.boardCells[i][j] = new WallCell(j, i)
+                        break;
+                    case "r":
+                        this.boardCells[i][j] = new RedKey(j, i)
+                        break;
+                    case "R":
+                        this.boardCells[i][j] = new RedCell(j, i)
+                        break;
+                }
                 if (boardData[i][j] == 0)
                 {
                     this.boardCells[i][j] = new EmptyCell(j, i)
@@ -63,38 +78,6 @@ class EmptyCell extends Cell
     }
 }
 
-class RedCell extends Cell
-{
-    CELL_COLOR(){return "black";}
-    movementAllowed(cursor)
-    {
-        return false;
-    }
-    takeCursor(cursor)
-    {
-        return {
-            type: "failure",
-            reason: "wall"
-        }
-    }
-}
-
-class RedKey extends Cell
-{
-    CELL_COLOR(){return "black";}
-    movementAllowed(cursor)
-    {
-        return false;
-    }
-    takeCursor(cursor)
-    {
-        return {
-            type: "failure",
-            reason: "wall"
-        }
-    }
-}
-
 class WallCell extends Cell
 {
     CELL_COLOR(){return "black";}
@@ -110,6 +93,53 @@ class WallCell extends Cell
         }
     }
 }
+
+
+class RedCell extends Cell
+{
+    CELL_COLOR(){return "PaleVioletRed";}
+    BIT_VALUE(){return 1}
+    movementAllowed(cursor)
+    {
+        return ((cursor.bitMask & this.BIT_VALUE()) == this.BIT_VALUE());
+    }
+    takeCursor(cursor)
+    {
+        if(!this.movementAllowed(cursor))
+        {
+            return {
+                type: "failure",
+                reason: "key not unlocked"
+            }    
+        }
+        cursor.xIndex = this.xIndex
+        cursor.yIndex = this.yIndex
+        return {
+            type: "success",
+            movementType: "normal"
+        }
+    }
+}
+
+class RedKey extends Cell
+{
+    CELL_COLOR(){return "red";}
+    BIT_VALUE(){return 1}
+    movementAllowed(cursor)
+    {
+        return true;
+    }
+    takeCursor(cursor)
+    {
+        cursor.bitMask |= this.BIT_VALUE()
+        cursor.xIndex = this.xIndex
+        cursor.yIndex = this.yIndex
+        return {
+            type: "success",
+            movementType: "normal"
+        }
+    }
+}
 class Cursor {
 
     constructor(xIndex, yIndex, board)
@@ -121,8 +151,8 @@ class Cursor {
         this.puzzleSolved = false;
     }
 
-    get boardHeight(){return this.board.height}
-    get boardWidth(){return this.board.width}
+    boardHeight(){return this.board.height}
+    boardWidth(){return this.board.width}
 
     move(deltaX, deltaY)
     {
@@ -159,9 +189,9 @@ const mazeSquares = [
     [ 1, 0, 1, 0, 1, 0, 0, 1, 1, 1],
     [ 1, 0, 1, 0, 1, 0, 0, 1, 1, 1],
     [ 1, 0, 1, 0, 1, 0, 0, 1, 1, 1],
-    [ 0, 0, 1, 0, 1, 0, 0, 1, 1, 1],
+    [ "r", 0, 1, 0, 1, 0, 0, 1, 1, 1],
     [ 1, 1, 1, 0, 1, 0, 0, 1, 1, 1],
-    [ 1, 1, 1, 0, 1, 0, 0, 1, 1, 1],
+    [ 1, 1, 1, 0, "R", "R", "R", "R", 1, 1],
 
 ]
 const maze = new Board(TEST_WIDTH, TEST_HEIGHT, mazeSquares)
@@ -190,6 +220,8 @@ function flashCell(cellIndex, color)
     let deltaOpacity = 0.025;
     let opacity = 0;
     let cell = document.getElementById("cell_"+cellIndex)
+    let startingBackgroundColor = cell.style.backgroundColor;
+    let startingOpacity = cell.style.opacity
     cell.style.backgroundColor = color;
     let timer = window.setInterval(function() {
         cell.style.opacity = opacity
@@ -202,7 +234,8 @@ function flashCell(cellIndex, color)
         }
 
     },16)
-    cell.style.opacity = 0
+    cell.style.opacity = startingOpacity;
+    cell.style.backgroundColor = startingBackgroundColor
 
 }
 document.addEventListener('keypress', (e) =>{
