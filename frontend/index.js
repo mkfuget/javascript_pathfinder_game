@@ -1,5 +1,5 @@
 class Board {
-    constructor(width, height)
+    constructor(width, height, boardData)
     {
         this.height = height;
         this.width = width;
@@ -12,21 +12,17 @@ class Board {
         {
             for(let j=0; j<width; j++)
             {
-                if (mazeSquares[i][j] == 0)
+                if (boardData[i][j] == 0)
                 {
-                    this.boardCells[i][j] = new EmptyCell(i, j)
+                    this.boardCells[i][j] = new EmptyCell(j, i)
                 }
-                else if (mazeSquares[i][j] == 0)
+                else if (boardData[i][j] == 1)
                 {
-                    this.boardCells[i][j] = new FullCell(i, j)
+                    this.boardCells[i][j] = new WallCell(j, i)
                 }
             }
         }
 
-    }
-    setBoardCell(x_index, y_index, cell)
-    {
-        this.boardCells[x_index][y_index] = cell;
     }
     static indexToXIndex(index)
     {
@@ -80,17 +76,25 @@ class WallCell extends Cell
 }
 
 class Cursor {
-    constructor(x_index, y_index, board)
+    constructor(xIndex, yIndex, board)
     {
-        this.x_index = x_index;
-        this.y_index = y_index;
+        this.xIndex = xIndex;
+        this.yIndex = yIndex;
         this.board = board;
         this.bitMask = 0;
     }
 
     move(deltaX, deltaY)
     {
-        return this.board.boardCells[this.x_index + deltaX][this.y_index+deltaY].takeCursor(this)
+        const xDestination = this.xIndex + deltaX
+        const yDestination = this.yIndex + deltaY
+
+        return this.board.boardCells[yDestination][xDestination].takeCursor(this)
+    }
+
+    index()
+    {
+        return this.xIndex + this.yIndex*this.board.height
     }
 }
 
@@ -113,7 +117,7 @@ const mazeSquares = [
     [ 1, 1, 1, 0, 1, 0, 0, 1, 1, 1],
 
 ]
-const maze = new Board(TEST_WIDTH, TEST_HEIGHT)
+const maze = new Board(TEST_WIDTH, TEST_HEIGHT, mazeSquares)
 let testCursor = new Cursor(0, 0, maze)
 function addBoard(width, height)
 {
@@ -138,7 +142,7 @@ function addBoard(width, height)
 addBoard(TEST_WIDTH, TEST_HEIGHT);
 function flashCell(cellIndex, color)
 {
-    let deltaOpacity = 0.1;
+    let deltaOpacity = 0.025;
     let opacity = 0;
     let cell = document.getElementById("cell_"+cellIndex)
     cell.style.backgroundColor = color;
@@ -152,21 +156,31 @@ function flashCell(cellIndex, color)
             window.clearInterval(timer);
         }
 
-    },100)
+    },16)
     cell.style.opacity = 0
 
 }
-const log = document.getElementById('log');
-
-documentMain.addEventListener('keypress', function(){
-    for(let i=0; i<200; i++)
+document.addEventListener('keypress', (e) =>{
+    switch(e.key) 
     {
-        setTimeout(function(){
-            flashCell(i, "red")
-        }, 100*i) 
-    }
-})
+        case "w":
+            testCursor.move(0, -1);
+            break;
+        case "a":
+            testCursor.move(-1, 0);
+            break;
+        case "s":
+            testCursor.move(0, 1);
+            break;
+        case "d":
+            testCursor.move(1, 0);
+            break;
+                                    
+    }   
+    flashCell(testCursor.index(), "red")
 
+
+});
 
 
 
