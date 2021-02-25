@@ -45,10 +45,13 @@ class Cell
 }
 class EmptyCell extends Cell
 {
+    
+    CELL_COLOR(){return "white";}
     movementAllowed(cursor)
     {
         return true;
     }
+
     takeCursor(cursor)
     {
         cursor.xIndex = this.xIndex
@@ -60,8 +63,9 @@ class EmptyCell extends Cell
     }
 }
 
-class WallCell extends Cell
+class RedCell extends Cell
 {
+    CELL_COLOR(){return "black";}
     movementAllowed(cursor)
     {
         return false;
@@ -70,25 +74,68 @@ class WallCell extends Cell
     {
         return {
             type: "failure",
-            movementType: "blocked"
+            reason: "wall"
         }
     }
 }
 
+class RedKey extends Cell
+{
+    CELL_COLOR(){return "black";}
+    movementAllowed(cursor)
+    {
+        return false;
+    }
+    takeCursor(cursor)
+    {
+        return {
+            type: "failure",
+            reason: "wall"
+        }
+    }
+}
+
+class WallCell extends Cell
+{
+    CELL_COLOR(){return "black";}
+    movementAllowed(cursor)
+    {
+        return false;
+    }
+    takeCursor(cursor)
+    {
+        return {
+            type: "failure",
+            reason: "wall"
+        }
+    }
+}
 class Cursor {
+
     constructor(xIndex, yIndex, board)
     {
         this.xIndex = xIndex;
         this.yIndex = yIndex;
         this.board = board;
         this.bitMask = 0;
+        this.puzzleSolved = false;
     }
+
+    get boardHeight(){return this.board.height}
+    get boardWidth(){return this.board.width}
 
     move(deltaX, deltaY)
     {
+        
         const xDestination = this.xIndex + deltaX
         const yDestination = this.yIndex + deltaY
-
+        if(xDestination < 0 || yDestination < 0 || xDestination > this.boardWidth() || yDestination > this.boardHeight())
+        {
+            return {
+                type: "failure",
+                reason: "index out of bounds"
+            }
+        }
         return this.board.boardCells[yDestination][xDestination].takeCursor(this)
     }
 
@@ -131,10 +178,8 @@ function addBoard(width, height)
         {
             let newBoardCell = newBoardRow.insertCell();
             newBoardCell.id = "cell_"+(j+i*width);
-            if(mazeSquares[i][j] == 1)
-            {
-                newBoardCell.style.backgroundColor = "black";
-            }
+            newBoardCell.style.backgroundColor = maze.boardCells[i][j].CELL_COLOR();
+            
         }
     }
 
