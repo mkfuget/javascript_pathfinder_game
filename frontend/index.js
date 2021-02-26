@@ -26,14 +26,10 @@ class Board {
                     case "R":
                         this.boardCells[i][j] = new RedCell(j, i)
                         break;
-                }
-                if (boardData[i][j] == 0)
-                {
-                    this.boardCells[i][j] = new EmptyCell(j, i)
-                }
-                else if (boardData[i][j] == 1)
-                {
-                    this.boardCells[i][j] = new WallCell(j, i)
+                    case "i":
+                        this.boardCells[i][j] = new IceCell(j, i)
+                        break;
+    
                 }
             }
         }
@@ -140,6 +136,26 @@ class RedKey extends Cell
         }
     }
 }
+
+class IceCell extends Cell
+{
+    CELL_COLOR(){return "LightCyan";}
+    movementAllowed(cursor)
+    {
+        return true;
+    }
+    takeCursor(cursor, deltaX, deltaY)
+    {
+        cursor.xIndex = this.xIndex
+        cursor.yIndex = this.yIndex
+        cursor.move(deltaX, deltaY)
+        return {
+            type: "success",
+            movementType: "slide"
+        }
+    }
+}
+
 class Cursor {
 
     constructor(xIndex, yIndex, board)
@@ -166,7 +182,7 @@ class Cursor {
                 reason: "index out of bounds"
             }
         }
-        return this.board.boardCells[yDestination][xDestination].takeCursor(this)
+        return this.board.boardCells[yDestination][xDestination].takeCursor(this, deltaX, deltaY)
     }
 
     index()
@@ -182,12 +198,12 @@ let documentMain = document.querySelector("body");
 const TEST_WIDTH = 10;
 const TEST_HEIGHT = 10;
 const mazeSquares = [
-    [ 0, 1, 1, 0, 1, 0, 0, 1, 1, 1],
-    [ 0, 1, 1, 0, 1, 0, 0, 1, 1, 1],
-    [ 0, 1, 1, 0, 1, 0, 0, 1, 1, 1],
-    [ 0, 0, 0, 0, 1, 0, 0, 1, 1, 1],
-    [ 1, 0, 1, 0, 1, 0, 0, 1, 1, 1],
-    [ 1, 0, 1, 0, 1, 0, 0, 1, 1, 1],
+    [ 0, 1, 1, 0, 1, 0, "i", 1, 1, 1],
+    [ 0, 1, 1, 0, 1, 0, "i", 1, 1, 1],
+    [ 0, 1, 1, 0, 1, 0, "i", 1, 1, 1],
+    [ 0, 0, 0, 0, 1, 0, "i", 1, 1, 1],
+    [ 1, 0, 1, 0, 1, 0, "i", 1, 1, 1],
+    [ 1, 0, 1, 0, 1, 0, "i", 1, 1, 1],
     [ 1, 0, 1, 0, 1, 0, 0, 1, 1, 1],
     [ "r", 0, 1, 0, 1, 0, 0, 1, 1, 1],
     [ 1, 1, 1, 0, 1, 0, 0, 1, 1, 1],
@@ -199,7 +215,11 @@ let testCursor = new Cursor(0, 0, maze)
 function addBoard(width, height)
 {
     let newBoardTable = document.createElement('table');
+    let animatedCursor = document.createElement('div');
+    newBoardTable.id = "maze_table"
+    animatedCursor.id = "animated_cursor"
     documentMain.append(newBoardTable);
+    newBoardTable.append(animatedCursor)
     for(let i=0; i<height; i++)
     {
         let newBoardRow = newBoardTable.insertRow();
@@ -212,6 +232,7 @@ function addBoard(width, height)
             
         }
     }
+
 
 }
 addBoard(TEST_WIDTH, TEST_HEIGHT);
@@ -234,8 +255,17 @@ function flashCell(cellIndex, color)
         }
 
     },16)
-    cell.style.opacity = startingOpacity;
-    cell.style.backgroundColor = startingBackgroundColor
+    //cell.style.opacity = startingOpacity;
+    //cell.style.backgroundColor = startingBackgroundColor;
+
+}
+function moveAnimatedCursor(deltaX, deltaY)
+{
+    let animatedCursor = document.getElementById('animated_cursor')
+    let xCoordinate = parseInt(animatedCursor.style.right.replace('px', ''), 10);
+    let yCoordinate = parseInt(animatedCursor.style.top.replace('px', ''), 10);
+    animatedCursor.style.top = (yCoordinate + deltaY*40);
+    animatedCursor.style.right =(xCoordinate + deltaX*40);
 
 }
 document.addEventListener('keypress', (e) =>{
@@ -243,15 +273,19 @@ document.addEventListener('keypress', (e) =>{
     {
         case "w":
             testCursor.move(0, -1);
+            moveAnimatedCursor(0, -1)
             break;
         case "a":
             testCursor.move(-1, 0);
+            moveAnimatedCursor(-1, 0)
             break;
         case "s":
             testCursor.move(0, 1);
+            moveAnimatedCursor(0, 1)
             break;
         case "d":
             testCursor.move(1, 0);
+            moveAnimatedCursor(1, 0)
             break;
                                     
     }   
