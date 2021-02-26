@@ -113,11 +113,16 @@ class RedCell extends Cell
                 reason: "key not unlocked"
             }    
         }
+        let xStart = cursor.xIndex
+        let yStart = cursor.yIndex
         cursor.xIndex = this.xIndex
         cursor.yIndex = this.yIndex
         return {
             type: "success",
-            movementType: "normal"
+            movementType: "normal",
+            deltaX: cursor.xIndex - xStart,
+            deltaY: cursor.yIndex - yStart,
+            keysUnlocked: 'none'
         }
     }
 }
@@ -133,11 +138,16 @@ class RedKey extends Cell
     takeCursor(cursor)
     {
         cursor.bitMask |= this.BIT_VALUE()
+        let xStart = cursor.xIndex
+        let yStart = cursor.yIndex
         cursor.xIndex = this.xIndex
         cursor.yIndex = this.yIndex
         return {
             type: "success",
-            movementType: "normal"
+            movementType: "normal",
+            deltaX: cursor.xIndex - xStart,
+            deltaY: cursor.yIndex - yStart,
+            keysUnlocked: "red"
         }
     }
 }
@@ -151,12 +161,18 @@ class IceCell extends Cell
     }
     takeCursor(cursor, deltaX, deltaY)
     {
+        let xStart = cursor.xIndex
+        let yStart = cursor.yIndex
         cursor.xIndex = this.xIndex
         cursor.yIndex = this.yIndex
-        cursor.move(deltaX, deltaY)
+        let result = cursor.move(deltaX, deltaY)
         return {
             type: "success",
-            movementType: "slide"
+            movementType: "slide",
+            deltaX: cursor.xIndex - xStart,
+            deltaY: cursor.yIndex - yStart,
+            keysUnlocked: result.keysUnlocked
+
         }
     }
 }
@@ -267,33 +283,32 @@ function flashCell(cellIndex, color)
     //cell.style.backgroundColor = startingBackgroundColor;
 
 }
-function moveAnimatedCursor(deltaX, deltaY)
+//Takes the result of an attempted move and animates it on the screen
+function moveAnimatedCursor(moveHash)
 {
-    let animatedCursor = document.getElementById('animated_cursor')
-    let xCoordinate = parseInt(animatedCursor.style.left.replace('px', ''), 10);
-    let yCoordinate = parseInt(animatedCursor.style.top.replace('px', ''), 10);
-    animatedCursor.style.top = `${yCoordinate + deltaY*43}px`;
-    animatedCursor.style.left =`${xCoordinate + deltaX*43}px`;
-
+    if(moveHash.type == "success")
+    {
+        let animatedCursor = document.getElementById('animated_cursor')
+        let xCoordinate = parseInt(animatedCursor.style.left.replace('px', ''), 10);
+        let yCoordinate = parseInt(animatedCursor.style.top.replace('px', ''), 10);
+        animatedCursor.style.top = `${yCoordinate + moveHash.deltaY*43}px`;
+        animatedCursor.style.left =`${xCoordinate + moveHash.deltaX*43}px`;    
+    }
 }
 document.addEventListener('keypress', (e) =>{
     switch(e.key) 
     {
         case "w":
-            testCursor.move(0, -1);
-            moveAnimatedCursor(0, -1)
+            moveAnimatedCursor(testCursor.move(0, -1));
             break;
         case "a":
-            testCursor.move(-1, 0);
-            moveAnimatedCursor(-1, 0)
+            moveAnimatedCursor(testCursor.move(-1, 0));
             break;
         case "s":
-            testCursor.move(0, 1);
-            moveAnimatedCursor(0, 1)
+            moveAnimatedCursor(testCursor.move(0, 1));
             break;
         case "d":
-            testCursor.move(1, 0);
-            moveAnimatedCursor(1, 0)
+            moveAnimatedCursor(testCursor.move(1, 0));
             break;
                                     
     }   
