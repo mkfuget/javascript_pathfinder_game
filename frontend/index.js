@@ -65,11 +65,16 @@ class EmptyCell extends Cell
 
     takeCursor(cursor)
     {
+        let xStart = cursor.xIndex
+        let yStart = cursor.yIndex
         cursor.xIndex = this.xIndex
         cursor.yIndex = this.yIndex
         return {
             type: "success",
-            movementType: "normal"
+            movementType: "normal",
+            deltaX: cursor.xIndex - xStart,
+            deltaY: cursor.yIndex - yStart,
+            keysUnlocked: 'none'
         }
     }
 }
@@ -218,6 +223,9 @@ function addBoard(width, height)
     let animatedCursor = document.createElement('div');
     newBoardTable.id = "maze_table"
     animatedCursor.id = "animated_cursor"
+    animatedCursor.style.left = '10px'
+    animatedCursor.style.top = '10px'
+
     documentMain.append(newBoardTable);
     newBoardTable.append(animatedCursor)
     for(let i=0; i<height; i++)
@@ -262,10 +270,10 @@ function flashCell(cellIndex, color)
 function moveAnimatedCursor(deltaX, deltaY)
 {
     let animatedCursor = document.getElementById('animated_cursor')
-    let xCoordinate = parseInt(animatedCursor.style.right.replace('px', ''), 10);
+    let xCoordinate = parseInt(animatedCursor.style.left.replace('px', ''), 10);
     let yCoordinate = parseInt(animatedCursor.style.top.replace('px', ''), 10);
-    animatedCursor.style.top = (yCoordinate + deltaY*40);
-    animatedCursor.style.right =(xCoordinate + deltaX*40);
+    animatedCursor.style.top = `${yCoordinate + deltaY*43}px`;
+    animatedCursor.style.left =`${xCoordinate + deltaX*43}px`;
 
 }
 document.addEventListener('keypress', (e) =>{
@@ -289,7 +297,6 @@ document.addEventListener('keypress', (e) =>{
             break;
                                     
     }   
-    flashCell(testCursor.index(), "red")
 
 
 });
