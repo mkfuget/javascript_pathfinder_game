@@ -29,11 +29,65 @@ class Board {
                     case "i":
                         this.boardCells[i][j] = new IceCell(j, i)
                         break;
-    
+                    case "f":
+                        this.boardCells[i][j] = new FinishCell(j, i)
+                        break;
+
                 }
             }
         }
 
+    }
+    solveMaze(cursor)//returns one array of the sqaures in the path finding algorithm and one for the shortest path solution 
+    {
+        let pathTravelled = new Array(this.height)
+        for(let i=0; i<this.height; i++)//initialize a 3-d array that corresponding to every square on the board and a third index for the bitmask value
+        {
+            pathTravelled[i] = new Array(this.width)
+        }
+        for(let i=0; i<this.height; i++)
+        {
+            for(let j=0; j<this.width; j++)
+            {
+                pathTravelled[i][j] = new Array(16).fill(false)
+            }
+        }
+        let solveQueue = [];
+        let solveOrder = [];
+        pathTravelled[cursor.yIndex][cursor.xIndex][cursor.bitMask] = "Start Square"
+        solveQueue.push(cursor);
+        solveOrder.push(cursor);
+        while(!solveOrder[0].puzzleSolved)
+        {
+            const firstCursor = solveQueue.shift();
+            const currentXindex = firstCursor.xIndex;
+            const currentYindex = firstCursor.yIndex;
+            const currentBitMask = firstCursor.bitMask;
+
+            let leftCursor = firstCursor.copyConstructor();
+            let rightCursor = firstCursor.copyConstructor();
+            let upCursor = firstCursor.copyConstructor();
+            let downCursor = firstCursor.copyConstructor();
+            const cursors = [rightCursor, downCursor, leftCursor, upCursor];
+            const deltaXs = [1, 0, -1, 0];
+            const delyaYs = [0, 1, 0, -1];
+            for(let i =0; i<4; i++)
+            {
+                let currentCursor = cursors[i]
+                if(currentCursor.move(deltaXs[i], delyaYs[i]).type == "success" && !pathTravelled[currentCursor.yIndex][currentCursor.xIndex][currentCursor.bitMask])
+                {
+                    solveQueue.push(currentCursor);
+                    solveOrder.push(currentCursor);
+                    pathTravelled[currentCursor.yIndex][currentCursor.xIndex][currentCursor.bitMask] = 
+                    {
+                        lastXIndex: currentXindex,
+                        lastYIndex: currentYindex,
+                        lastBitMask:  currentBitMask,
+                    }
+                }    
+            }
+        }
+        return solveOrder;
     }
     static indexToXIndex(index)
     {
@@ -177,6 +231,29 @@ class IceCell extends Cell
     }
 }
 
+class FinishCell extends Cell
+{
+    CELL_COLOR(){return "#B0B0B0";}
+    movementAllowed(cursor)
+    {
+        return true;
+    }
+    takeCursor(cursor)
+    {
+        cursor.puzzleSolved = true;
+        let xStart = cursor.xIndex
+        let yStart = cursor.yIndex
+        cursor.xIndex = this.xIndex
+        cursor.yIndex = this.yIndex
+        return {
+            type: "success",
+            movementType: "slide",
+            deltaX: cursor.xIndex - xStart,
+            deltaY: cursor.yIndex - yStart,
+            keysUnlocked: "none"
+        }    
+    }
+}
 class Cursor {
 
     constructor(xIndex, yIndex, board)
@@ -210,6 +287,14 @@ class Cursor {
     {
         return this.xIndex + this.yIndex*this.board.height
     }
+
+    copyConstructor()
+    {
+        let out = new Cursor(this.xIndex, this.yIndex, this.board);
+        out.bitMask = this.bitMask;
+        out.puzzleSolved = this.puzzleSolved;
+        return out;
+    }
 }
 
 
@@ -222,7 +307,7 @@ const mazeSquares = [
     [ 0, 1, 1, 0, 1, 0, "i", 1, 1, 1],
     [ 0, 1, 1, 0, 1, 0, "i", 1, 1, 1],
     [ 0, 1, 1, 0, 1, 0, "i", 1, 1, 1],
-    [ 0, 0, 0, 0, 1, 0, "i", 1, 1, 1],
+    [ 0, 0, 0, 0, 1, 0, "i", 0, 0, "f"],
     [ 1, 0, 1, 0, 1, 0, "i", 1, 1, 1],
     [ 1, 0, 1, 0, 1, 0, "i", 1, 1, 1],
     [ 1, 0, 1, 0, 1, 0, 0, 1, 1, 1],
@@ -233,6 +318,7 @@ const mazeSquares = [
 ]
 const maze = new Board(TEST_WIDTH, TEST_HEIGHT, mazeSquares)
 let testCursor = new Cursor(0, 0, maze)
+maze.solveMaze(testCursor)
 function addBoard(width, height)
 {
     let newBoardTable = document.createElement('table');
