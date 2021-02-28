@@ -57,7 +57,7 @@ class Board {
         pathTravelled[cursor.yIndex][cursor.xIndex][cursor.bitMask] = "Start Square"
         solveQueue.push(cursor);
         solveOrder.push(cursor);
-        while(!solveOrder[0].puzzleSolved)
+        while(!solveOrder[0].puzzleSolved && !solveQueue.length == 0)
         {
             const firstCursor = solveQueue.shift();
             const currentXindex = firstCursor.xIndex;
@@ -87,17 +87,29 @@ class Board {
                 }    
             }
         }
-        return solveOrder;
+        let finish = solveOrder[solveQueue.length - 1];
+        let shortestPath = [];
+        if(finish.puzzleSolved)
+        {
+            
+        }
+        return
+        {
+            searchPath: solveOrder;
+        } 
     }
-    static indexToXIndex(index)
+    indexToXIndex(index)
     {
         return index%this.width;
     }
-    static indexToYIndex(index)
+    indexToYIndex(index)
     {
         return Math.floor(index/this.width);
     }
-
+    toBoardIndex(xIndex, yIndex)
+    {
+        return xIndex + this.height*yIndex;
+    }
 }
 
 class Cell
@@ -273,7 +285,7 @@ class Cursor {
         
         const xDestination = this.xIndex + deltaX
         const yDestination = this.yIndex + deltaY
-        if(xDestination < 0 || yDestination < 0 || xDestination > this.boardWidth() || yDestination > this.boardHeight())
+        if(xDestination < 0 || yDestination < 0 || xDestination >= this.boardWidth() || yDestination >= this.boardHeight())
         {
             return {
                 type: "failure",
@@ -294,6 +306,10 @@ class Cursor {
         out.bitMask = this.bitMask;
         out.puzzleSolved = this.puzzleSolved;
         return out;
+    }
+    boardIndex()
+    {
+        return this.board.toBoardIndex(this.xIndex, this.yIndex)
     }
 }
 
@@ -318,7 +334,6 @@ const mazeSquares = [
 ]
 const maze = new Board(TEST_WIDTH, TEST_HEIGHT, mazeSquares)
 let testCursor = new Cursor(0, 0, maze)
-maze.solveMaze(testCursor)
 function addBoard(width, height)
 {
     let newBoardTable = document.createElement('table');
@@ -362,11 +377,12 @@ function flashCell(cellIndex, color)
         }
         if(opacity < 0){
             window.clearInterval(timer);
+            cell.style.opacity = startingOpacity;
+            cell.style.backgroundColor = startingBackgroundColor;
+        
         }
 
     },16)
-    //cell.style.opacity = startingOpacity;
-    //cell.style.backgroundColor = startingBackgroundColor;
 
 }
 //Takes the result of an attempted move and animates it on the screen
@@ -380,6 +396,18 @@ function moveAnimatedCursor(moveHash)
         animatedCursor.style.top = `${yCoordinate + moveHash.deltaY*43}px`;
         animatedCursor.style.left =`${xCoordinate + moveHash.deltaX*43}px`;    
     }
+}
+function animateSoluction(solution)
+{
+    let i =0; 
+    let timer = window.setInterval(function() {
+        flashCell(solution[i].boardIndex(), "red")
+        i++;
+        if(i>= solution.length)
+        {
+            window.clearInterval(timer);
+        }
+    }, 400)
 }
 document.addEventListener('keypress', (e) =>{
     switch(e.key) 
@@ -396,6 +424,8 @@ document.addEventListener('keypress', (e) =>{
         case "d":
             moveAnimatedCursor(testCursor.move(1, 0));
             break;
+        case "p":
+            animateSoluction(maze.solveMaze(testCursor));
                                     
     }   
 
