@@ -5,14 +5,13 @@
   <meta charset="utf-8">
 
   <title>The HTML5 Herald</title>
-
-  <link rel="stylesheet" href="app\javascript\packs\styles.css">
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
 
 </head>
 
 <body>
     <h1>TESTPAGE</h1>
-  <%= javascript_pack_tag 'index' %>
+    <%= javascript_pack_tag 'index' %>
 
-</body>
+  </body>
 </html>
