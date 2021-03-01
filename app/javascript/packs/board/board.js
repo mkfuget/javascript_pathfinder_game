@@ -1,5 +1,4 @@
-import {Cell, EmptyCell, FullCell} from "./cell.js"
-
+import * as cells from "./cell.js"
 class Board {
     constructor(width, height, boardData)
     {
@@ -17,22 +16,22 @@ class Board {
                 switch(boardData[i][j])
                 {
                     case 0:
-                        this.boardCells[i][j] = new EmptyCell(j, i)
+                        this.boardCells[i][j] = new cells.EmptyCell(j, i)
                         break;
                     case 1:
-                        this.boardCells[i][j] = new WallCell(j, i)
+                        this.boardCells[i][j] = new cells.WallCell(j, i)
                         break;
                     case "r":
-                        this.boardCells[i][j] = new RedKey(j, i)
+                        this.boardCells[i][j] = new cells.RedKey(j, i)
                         break;
                     case "R":
-                        this.boardCells[i][j] = new RedCell(j, i)
+                        this.boardCells[i][j] = new cells.RedCell(j, i)
                         break;
                     case "i":
-                        this.boardCells[i][j] = new IceCell(j, i)
+                        this.boardCells[i][j] = new cells.IceCell(j, i)
                         break;
                     case "f":
-                        this.boardCells[i][j] = new FinishCell(j, i)
+                        this.boardCells[i][j] = new cells.FinishCell(j, i)
                         break;
 
                 }
