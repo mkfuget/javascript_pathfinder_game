@@ -1,4 +1,5 @@
 import * as cells from "./cell.js"
+import PriorityQueue from "../PriorityQueue.js"
 class Board {
     constructor(width, height, boardData)
     {
@@ -39,7 +40,7 @@ class Board {
         }
 
     }
-    solveMaze(cursor)//returns one array of the squares in the path finding algorithm and one for the shortest path solution 
+    solveMaze(cursor, solveQueue)//returns one array of the squares in the path finding algorithm and one for the shortest path solution 
     {
         let pathTravelled = new Array(this.height)
         for(let i=0; i<this.height; i++)//initialize a 3-d array that corresponding to every square on the board and a third index for the bitmask value
@@ -53,14 +54,13 @@ class Board {
                 pathTravelled[i][j] = new Array(16).fill(false)
             }
         }
-        let solveQueue = [];
         let solveOrder = [];
         pathTravelled[cursor.yIndex][cursor.xIndex][cursor.bitMask] = "Start Square"
         solveQueue.push(cursor);
         solveOrder.push(cursor);
         while(!solveOrder[0].puzzleSolved && !solveQueue.length == 0)
         {
-            const firstCursor = solveQueue.shift();
+            const firstCursor = solveQueue.pop();
             const currentXindex = firstCursor.xIndex;
             const currentYindex = firstCursor.yIndex;
             const currentBitMask = firstCursor.bitMask;
