@@ -10,15 +10,22 @@
 </head>
 
 <body>
-    <h1>TESTPAGE</h1>
-    <table id="maze_table">
-    <% for i in 1..15 do %>
-      <tr id = "row_<%=i%>">
-      <% for j in 1..20 do %>
-        <td id = "cell_<%=i*20+j%>"></td>
+  <div class="grid-container">
+    <div class="grid-item">
+      <table id="maze_table">
+      <% for i in 0..14 do %>
+        <tr id = "row_<%=i%>">
+        <% for j in 0..19 do %>
+          <td id = "cell_<%=i*20+j%>"></td>
+        <%end%>
+        </tr>
       <%end%>
-      </tr>
-    <%end%>
-    </table>
+      </table>
+    </div>
+    <div class="grid-item">2</div>
+    <div class="grid-item">3</div>
+
+  <div class="grid-container">
+
 </body>
 </html>

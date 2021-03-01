@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "@rails/webpacker": "5.2.1"
+    "@rails/webpacker": "5.2.1",
+    "animejs": "^3.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

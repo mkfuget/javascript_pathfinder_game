@@ -19,6 +19,9 @@ class Board {
                     case 0:
                         this.boardCells[i][j] = new cells.EmptyCell(j, i)
                         break;
+                    case undefined:
+                        this.boardCells[i][j] = new cells.WallCell(j, i)
+                        break;
                     case 1:
                         this.boardCells[i][j] = new cells.WallCell(j, i)
                         break;
