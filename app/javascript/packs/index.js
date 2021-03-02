@@ -52,26 +52,22 @@ function addBoard(board)
 addBoard(board);
 function flashCell(cellIndex, color)
 {
-    let deltaOpacity = 0.025;
-    let opacity = 0;
     let cell = document.getElementById("cell_"+cellIndex)
     let startingBackgroundColor = cell.style.backgroundColor;
     let startingOpacity = cell.style.opacity
-    cell.style.backgroundColor = color;
-    let timer = window.setInterval(function() {
-        cell.style.opacity = opacity
-        opacity += deltaOpacity;
-        if(opacity > 0.7){
-            deltaOpacity*=-1;
-        }
-        if(opacity < 0){
-            window.clearInterval(timer);
-            cell.style.opacity = startingOpacity;
-            cell.style.backgroundColor = startingBackgroundColor;
-        
-        }
 
-    },16)
+    const animation = anime({
+        targets: cell,
+        background: '#fc03c2',
+        duration: 250,
+        easing: 'linear',
+        direction: 'alternate'
+
+    })
+    animation.finished.then(function()
+    {
+
+    })
 
 }
 //Takes the result of an attempted move and animates it on the screen
@@ -128,6 +124,7 @@ document.addEventListener('keypress', (e) =>{
     {
         case "w":
             addToAnimationQueue(testCursor.move(0, -1));
+            flashCell(0, "red")
             break;
         case "a":
             addToAnimationQueue(testCursor.move(-1, 0));
