@@ -120,7 +120,7 @@ class Board {
     }
     toBoardIndex(xIndex, yIndex)
     {
-        return xIndex + this.height*yIndex;
+        return xIndex + this.width*yIndex;
     }
 }
 export default Board;

@@ -103,13 +103,26 @@ function dequeueAnimationQueue()
         }
     })
 }
-
 function animateSolution(solution)
 {
-    for(let i=0; i<solution.length; i++)
+    let pathFindingAnimeTimeline = anime.timeline({
+        easing: 'linear',
+        duration: 10000,
+    })    
+    
+    for(let i=0; i<solution.searchPath.length; i++)
     {
-        
+        const boardIndex  = board.toBoardIndex(solution.searchPath[i].xIndex, solution.searchPath[i].yIndex);
+        const cell = document.getElementById(`cell_${boardIndex}`)
+        pathFindingAnimeTimeline.add({
+            targets: cell,
+            background: '#ab24e0',
+            direction: 'alternate',
+            duration: 400,
+        }, 100*i)
     }
+    
+    //pathFindingAnimeTimeline.play
 }
 document.addEventListener('keypress', (e) =>{
     switch(e.key) 
@@ -127,8 +140,7 @@ document.addEventListener('keypress', (e) =>{
             addToAnimationQueue(testCursor.move(1, 0));
             break;
         case "p":
-            const output = board.solveMaze(testCursor, dijkstraQueue)
-            animateSolution(maze.solveMaze(testCursor));
+            animateSolution(board.solveMaze(testCursor, dijkstraQueue));
                                     
     }   
 
