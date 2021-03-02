@@ -60,10 +60,11 @@ class Board {
         let solveOrder = [];
         pathTravelled[cursor.yIndex][cursor.xIndex][cursor.bitMask] = "Start Square"
         solveQueue.push(cursor);
-        solveOrder.push(cursor);
-        while(!solveOrder[0].puzzleSolved && !solveQueue.length == 0)
+        do 
         {
             const firstCursor = solveQueue.pop();
+            solveOrder.push(firstCursor);
+
             const currentXindex = firstCursor.xIndex;
             const currentYindex = firstCursor.yIndex;
             const currentBitMask = firstCursor.bitMask;
@@ -81,7 +82,6 @@ class Board {
                 if(currentCursor.move(deltaXs[i], delyaYs[i]).type == "success" && !pathTravelled[currentCursor.yIndex][currentCursor.xIndex][currentCursor.bitMask])
                 {
                     solveQueue.push(currentCursor);
-                    solveOrder.push(currentCursor);
                     pathTravelled[currentCursor.yIndex][currentCursor.xIndex][currentCursor.bitMask] = 
                     {
                         lastXIndex: currentXindex,
@@ -89,17 +89,25 @@ class Board {
                         lastBitMask:  currentBitMask,
                     }
                 }    
+            } 
+        } while(!solveOrder[solveOrder.length - 1].puzzleSolved && !solveQueue.empty())
+        let finishCursor = solveOrder[solveOrder.length - 1];
+        let currentCell = pathTravelled[finishCursor.yIndex][finishCursor.xIndex][finishCursor.bitMask];
+        let pathFound = [];
+        if(finishCursor.puzzleSolved)
+        {
+            while(currentCell!="Start Square")
+            {
+                pathFound.unshift({
+                    xIndex: currentCell.lastXIndex,
+                    yIndex: currentCell.lastYIndex
+                })
+                currentCell = pathTravelled[currentCell.lastYIndex][currentCell.lastXIndex][currentCell.lastBitMask]    
             }
         }
-        let finish = solveOrder[solveQueue.length - 1];
-        let shortestPath = [];
-        if(finish.puzzleSolved)
-        {
-            
-        }
-        return
-        {
-            searchPath: solveOrder;
+        return{
+            searchPath: solveOrder,
+            foundPath: pathFound
         } 
     }
     indexToXIndex(index)

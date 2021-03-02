@@ -1,6 +1,7 @@
 import Board from'./board/board.js'
 import Cursor from './board/cursor.js'
 import anime from 'animejs/lib/anime.es.js';
+import PriorityQueue from "./PriorityQueue.js"
 
 const MAZE_HEIGHT = 15;
 const MAZE_WIDTH = 20;
@@ -27,6 +28,11 @@ const mazeSquares = [
 ]
 const board = new Board(MAZE_WIDTH, MAZE_HEIGHT, mazeSquares)
 let testCursor = new Cursor(0, 0, board)
+function dijkstraComparator(cursorA, cursorB)
+{
+    return cursorA.stepsTaken < cursorB.stepsTaken
+}
+let dijkstraQueue = new PriorityQueue(dijkstraComparator);
 function addBoard(board)
 {
     let mazeTable = document.getElementById('maze_table');
@@ -52,23 +58,14 @@ function addBoard(board)
 addBoard(board);
 function flashCell(cellIndex, color)
 {
-    let cell = document.getElementById("cell_"+cellIndex)
-    let startingBackgroundColor = cell.style.backgroundColor;
-    let startingOpacity = cell.style.opacity
-
     const animation = anime({
         targets: cell,
-        background: '#fc03c2',
+        background: '#color',
         duration: 250,
         easing: 'linear',
         direction: 'alternate'
 
     })
-    animation.finished.then(function()
-    {
-
-    })
-
 }
 //Takes the result of an attempted move and animates it on the screen
 let animationQueue = [];
@@ -109,22 +106,16 @@ function dequeueAnimationQueue()
 
 function animateSolution(solution)
 {
-    let i =0; 
-    let timer = window.setInterval(function() {
-        flashCell(solution[i].boardIndex(), "red")
-        i++;
-        if(i>= solution.length)
-        {
-            window.clearInterval(timer);
-        }
-    }, 400)
+    for(let i=0; i<solution.length; i++)
+    {
+        
+    }
 }
 document.addEventListener('keypress', (e) =>{
     switch(e.key) 
     {
         case "w":
             addToAnimationQueue(testCursor.move(0, -1));
-            flashCell(0, "red")
             break;
         case "a":
             addToAnimationQueue(testCursor.move(-1, 0));
@@ -136,6 +127,7 @@ document.addEventListener('keypress', (e) =>{
             addToAnimationQueue(testCursor.move(1, 0));
             break;
         case "p":
+            const output = board.solveMaze(testCursor, dijkstraQueue)
             animateSolution(maze.solveMaze(testCursor));
                                     
     }   

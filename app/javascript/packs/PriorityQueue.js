@@ -11,6 +11,10 @@ class PriorityQueue
     {
         return this.heap.length;
     }
+    empty()
+    {
+        return this.heap.length === 0;
+    }
     parent(i)
     {
         return Math.floor((i-1)/2);
@@ -30,7 +34,7 @@ class PriorityQueue
     push(value)
     {
         this.heap.push(value)
-        this.buddleUp(this.size() - 1)
+        this.bubbleUp(this.size() - 1)
     }
     pop()
     {
@@ -38,7 +42,7 @@ class PriorityQueue
         this.swap(0, this.size() - 1);
         this.heap.pop();
         this.bubbleDown(0);
-
+        return outValue;
     }
     swap(i, j)
     {
@@ -52,7 +56,7 @@ class PriorityQueue
             i = this.parent(i)
         }
     }
-    buddleDown(i)
+    bubbleDown(i)
     {
         while (this.left(i) < this.size())
         {
@@ -65,8 +69,13 @@ class PriorityQueue
             {
                 child = this.left(i);
             }
+            if(i == child)//heap structure is good stop bubble down
+            {
+                break;
+            }
             this.swap(i, child);
             i = child;
         }
     }
 }
+export default PriorityQueue;
