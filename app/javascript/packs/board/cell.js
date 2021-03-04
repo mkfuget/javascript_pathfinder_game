@@ -1,3 +1,13 @@
+import redKeyImage from '../../images/red_key.png'
+import blueKeyImage from '../../images/blue_key.png'
+import greenKeyImage from '../../images/green_key.png'
+import yellowKeyImage from '../../images/yellow_key.png'
+
+import redLockImage from '../../images/red_lock.png'
+
+import iceCellImage from '../../images/ice_cell.png'
+import wallCellImage from '../../images/wall_cell.png'
+
 export class Cell
 {
     constructor(xIndex, yIndex)
@@ -9,7 +19,9 @@ export class Cell
 export class EmptyCell extends Cell
 {
     
-    CELL_COLOR(){return "white";}
+    CELL_COLOR(){return "#FFFFFF";}
+    CELL_IMAGE(){return "none"}
+
     movementAllowed(cursor)
     {
         return true;
@@ -33,7 +45,8 @@ export class EmptyCell extends Cell
 
 export class WallCell extends Cell
 {
-    CELL_COLOR(){return "black";}
+    CELL_COLOR(){return "#000000";}
+    CELL_IMAGE(){return `url(${wallCellImage})`}
     movementAllowed(cursor)
     {
         return false;
@@ -50,8 +63,10 @@ export class WallCell extends Cell
 
 export class RedCell extends Cell
 {
-    CELL_COLOR(){return "PaleVioletRed";}
+    CELL_COLOR(){return "#DB7093";}
     BIT_VALUE(){return 1}
+    CELL_IMAGE(){return `url(${redLockImage})`}
+
     movementAllowed(cursor)
     {
         return ((cursor.bitMask & this.BIT_VALUE()) == this.BIT_VALUE());
@@ -81,7 +96,9 @@ export class RedCell extends Cell
 
 export class RedKey extends Cell
 {
-    CELL_COLOR(){return "red";}
+    CELL_COLOR(){return "FF0000";}
+    CELL_IMAGE(){return `url(${redKeyImage})`}
+
     BIT_VALUE(){return 1}
     movementAllowed(cursor)
     {
@@ -106,7 +123,9 @@ export class RedKey extends Cell
 
 export class IceCell extends Cell
 {
-    CELL_COLOR(){return "LightCyan";}
+    CELL_COLOR(){return "#E0FFFF";}
+    CELL_IMAGE(){return `url(${iceCellImage})`}
+
     movementAllowed(cursor)
     {
         return true;
@@ -132,6 +151,8 @@ export class IceCell extends Cell
 export class FinishCell extends Cell
 {
     CELL_COLOR(){return "#B0B0B0";}
+    CELL_IMAGE(){return "none"}
+
     movementAllowed(cursor)
     {
         return true;

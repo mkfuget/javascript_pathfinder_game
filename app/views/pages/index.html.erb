@@ -16,7 +16,10 @@
       <% for i in 0..14 do %>
         <tr id = "row_<%=i%>">
         <% for j in 0..19 do %>
-          <td id = "cell_<%=i*20+j%>"></td>
+          <td id = "cell_<%=i*20+j%>">
+            <div class = "cell_image" id = "cell_image_<%=i*20+j%>"></div>
+            <div class = "cell_background_color"id = "cell_background_color_<%=i*20+j%>"></div>
+          </td>
         <%end%>
         </tr>
       <%end%>

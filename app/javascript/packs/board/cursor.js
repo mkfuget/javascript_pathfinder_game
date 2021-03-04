@@ -50,5 +50,61 @@ class Cursor {
     {
         return this.board.toBoardIndex(this.xIndex, this.yIndex)
     }
+    cursorColor(){
+        let out = "";
+        switch(this.bitMask)
+        {
+            case 0:
+                out = `rgb(201, 8, 8)`
+                break;
+            case 1:
+                out = `rgb(8, 198, 201)`
+                break;
+            case 2:
+                out = `rgb(8, 140, 201)`
+                break;
+            case 3:
+                out = `rgb(201, 102, 8)`
+                break;
+            case 4:
+                out = `rgb(8, 95, 201)`
+                break;
+            case 5:
+                out = `rgb(201, 179, 8)`
+                break;
+            case 6:
+                out = `rgb(201, 201, 8)`
+                break;
+            case 7:
+                out = `rgb(53, 8, 201)`
+                break;
+            case 8:
+                out = `rgb(8, 31, 201)`
+                break;
+            case 9:
+                out = `rgb(163, 201, 8)`
+                break;
+            case 10:
+                out = `rgb(124, 201, 8)`
+                break;
+            case 11:
+                out = `rgb(192, 158, 240)`
+                break;
+            case 12:
+                out = `rgb(114, 8, 201)`
+                break;
+            case 13:
+                out = `rgb(176, 8, 201)`
+                break;
+            case 14:
+                out = `rgb(201, 8, 140)`
+                break;
+            case 15:
+                out = `rgb(8, 201, 137)`
+                break;
+        }
+        return out;
+
+    }
 }
 export default Cursor;

@@ -2,6 +2,10 @@ import Board from'./board/board.js'
 import Cursor from './board/cursor.js'
 import anime from 'animejs/lib/anime.es.js';
 import PriorityQueue from "./PriorityQueue.js"
+import blueLockImage from '../images/blue_lock.png'
+import RedKeyImage from '../images/red_key.png'
+
+import wallCell from '../images/wall_cell.png'
 
 const MAZE_HEIGHT = 15;
 const MAZE_WIDTH = 20;
@@ -47,26 +51,23 @@ function addBoard(board)
         for(let j=0; j<20; j++)
         {
             const cellId = "cell_"+(j+i*MAZE_WIDTH);
+            const cellImage = "cell_image_"+(j+i*MAZE_WIDTH);
+
             let mazeCell = document.getElementById(cellId);
+            let mazeCellImage = document.getElementById("cell_image_0")
+            const currentCell = board.boardCells[i][j];
+            if(currentCell.CELL_IMAGE() !== "none")
+            {
+                document.getElementById(cellImage).style.background = currentCell.CELL_IMAGE();
+            }
+              
             mazeCell.style.backgroundColor = board.boardCells[i][j].CELL_COLOR();
-            
+
         }
     }
 
-
 }
 addBoard(board);
-function flashCell(cellIndex, color)
-{
-    const animation = anime({
-        targets: cell,
-        background: '#color',
-        duration: 250,
-        easing: 'linear',
-        direction: 'alternate'
-
-    })
-}
 //Takes the result of an attempted move and animates it on the screen
 let animationQueue = [];
 function addToAnimationQueue(moveHash)
@@ -74,7 +75,6 @@ function addToAnimationQueue(moveHash)
     if(moveHash.type == "success")
     {
         animationQueue.push(moveHash);
-        console.log(animationQueue.length)
         if(animationQueue.length === 1)
         {
             dequeueAnimationQueue()
@@ -107,22 +107,23 @@ function animateSolution(solution)
 {
     let pathFindingAnimeTimeline = anime.timeline({
         easing: 'linear',
-        duration: 10000,
     })    
     
     for(let i=0; i<solution.searchPath.length; i++)
     {
-        const boardIndex  = board.toBoardIndex(solution.searchPath[i].xIndex, solution.searchPath[i].yIndex);
+        const currentCursor = solution.searchPath[i]
+        const boardIndex  = board.toBoardIndex(currentCursor.xIndex, currentCursor.yIndex);
+        const flashColor = 'rgba(179, 0, 255, 0.2)'
         const cell = document.getElementById(`cell_${boardIndex}`)
+        const currentCellColor = `${cell.style.backgroundColor}`
         pathFindingAnimeTimeline.add({
             targets: cell,
-            background: '#ab24e0',
-            direction: 'alternate',
+            background: currentCursor.cursorColor(),
             duration: 400,
-        }, 100*i)
+        }, 75*i)
+
     }
     
-    //pathFindingAnimeTimeline.play
 }
 document.addEventListener('keypress', (e) =>{
     switch(e.key) 
