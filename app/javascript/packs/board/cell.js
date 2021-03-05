@@ -4,6 +4,9 @@ import greenKeyImage from '../../images/green_key.png'
 import yellowKeyImage from '../../images/yellow_key.png'
 
 import redLockImage from '../../images/red_lock.png'
+import blueLockImage from '../../images/blue_lock.png'
+import greenLockImage from '../../images/green_lock.png'
+import yellowLockImage from '../../images/yellow_lock.png'
 
 import iceCellImage from '../../images/ice_cell.png'
 import wallCellImage from '../../images/wall_cell.png'
@@ -61,12 +64,8 @@ export class WallCell extends Cell
 }
 
 
-export class RedCell extends Cell
+export class LockCell extends Cell
 {
-    CELL_COLOR(){return "#DB7093";}
-    BIT_VALUE(){return 1}
-    CELL_IMAGE(){return `url(${redLockImage})`}
-
     movementAllowed(cursor)
     {
         return ((cursor.bitMask & this.BIT_VALUE()) == this.BIT_VALUE());
@@ -94,12 +93,8 @@ export class RedCell extends Cell
     }
 }
 
-export class RedKey extends Cell
+export class KeyCell extends Cell
 {
-    CELL_COLOR(){return "FF0000";}
-    CELL_IMAGE(){return `url(${redKeyImage})`}
-
-    BIT_VALUE(){return 1}
     movementAllowed(cursor)
     {
         return true;
@@ -120,6 +115,56 @@ export class RedKey extends Cell
         }
     }
 }
+export class RedLockCell extends LockCell
+{
+    CELL_COLOR(){return "FF0000";}
+    CELL_IMAGE(){return `url(${redLockImage})`}
+    BIT_VALUE(){return 1}
+}
+export class RedKeyCell extends KeyCell
+{
+    CELL_COLOR(){return "FF0000";}
+    CELL_IMAGE(){return `url(${redKeyImage})`}
+    BIT_VALUE(){return 1}
+}
+export class BlueLockCell extends LockCell
+{
+    CELL_COLOR(){return "FF0000";}
+    CELL_IMAGE(){return `url(${blueLockImage})`}
+    BIT_VALUE(){return 2}
+}
+export class BlueKeyCell extends KeyCell
+{
+    CELL_COLOR(){return "FF0000";}
+    CELL_IMAGE(){return `url(${blueKeyImage})`}
+    BIT_VALUE(){return 2}
+}
+export class GreenLockCell extends LockCell
+{
+    CELL_COLOR(){return "FF0000";}
+    CELL_IMAGE(){return `url(${greenLockImage})`}
+    BIT_VALUE(){return 4}
+}
+export class GreenKeyCell extends KeyCell
+{
+    CELL_COLOR(){return "FF0000";}
+    CELL_IMAGE(){return `url(${greenKeyImage})`}
+    BIT_VALUE(){return 4}
+}
+export class YellowLockCell extends LockCell
+{
+    CELL_COLOR(){return "FF0000";}
+    CELL_IMAGE(){return `url(${yellowLockImage})`}
+    BIT_VALUE(){return 8}
+}
+export class YellowKeyCell extends KeyCell
+{
+    CELL_COLOR(){return "FF0000";}
+    CELL_IMAGE(){return `url(${yellowKeyImage})`}
+    BIT_VALUE(){return 8}
+}
+
+
 
 export class IceCell extends Cell
 {

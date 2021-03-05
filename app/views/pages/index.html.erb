@@ -10,25 +10,24 @@
 </head>
 
 <body>
-  <div class="grid-container">
-    <div class="grid-item">
-      <table id="maze_table">
-      <% for i in 0..14 do %>
-        <tr id = "row_<%=i%>">
-        <% for j in 0..19 do %>
-          <td id = "cell_<%=i*20+j%>">
-            <div class = "cell_image" id = "cell_image_<%=i*20+j%>"></div>
-            <div class = "cell_background_color"id = "cell_background_color_<%=i*20+j%>"></div>
-          </td>
-        <%end%>
-        </tr>
+  <div class="inner_content">
+    <table id="maze_table">
+    <% for i in 0..14 do %>
+      <tr id = "row_<%=i%>">
+      <% for j in 0..19 do %>
+        <td id = "cell_<%=i*20+j%>">
+          <div class = "cell_image" id = "cell_image_<%=i*20+j%>"></div>
+          <div class = "cell_background_color"id = "cell_background_color_<%=i*20+j%>"></div>
+        </td>
       <%end%>
-      </table>
-    </div>
-    <div class="grid-item">2</div>
-    <div class="grid-item">3</div>
+      </tr>
+    <%end%>
 
-  <div class="grid-container">
+    </table>
+    <button>Main Levels</button>
+    <button>User Levels</button>
+    <button>Create Level</button>
+  </div>
 
 </body>
 </html>
