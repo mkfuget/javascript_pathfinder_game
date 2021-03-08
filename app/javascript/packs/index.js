@@ -144,28 +144,30 @@ function addBoard(board)
 addBoard(board);
 function exportBoard(board)
 {
-    const url = '/boards'
-    const boardData = {
-        width: board.width,
-        height: board.height,
-        cells: []
-    }
+    const url = 'api/v1/boards'
+    let cells = [];
     for(let i=0; i<board.height; i++)
     {
         for(let j=0; j<board.width; j++)
         {
-            boardData.cells.push({
-                type: board.boardCells[i][j].type,
+            cells.push({
+                cell_type: board.boardCells[i][j].type,
                 board_index: board.toBoardIndex(j, i)
             })
         }
+    }
+
+    const boardData = {
+        width: board.width,
+        height: board.height,
+        board_type: "base",
+        cells_attributes: cells
     }
     const boardConfigObject = {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json",
-          
+            "Accept": "application/json"
         },
         body: JSON.stringify(boardData)
     };
@@ -263,8 +265,10 @@ document.addEventListener('keypress', (e) =>{
             break;
         case "p":
             animateSolution(board.solveMaze(testCursor, dijkstraQueue));
+            break;
         case "x":
             exportBoard(board)
+            break;
                                     
     }   
 

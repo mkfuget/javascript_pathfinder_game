@@ -15,16 +15,18 @@ ActiveRecord::Schema.define(version: 2021_02_17_015657) do
   create_table "boards", force: :cascade do |t|
     t.integer "width"
     t.integer "height"
-    t.string "type"
+    t.string "board_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "cells", force: :cascade do |t|
-    t.string "type"
+    t.string "cell_type"
     t.integer "board_index"
+    t.integer "board_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["board_id"], name: "index_cells_on_board_id"
   end
 
 end
