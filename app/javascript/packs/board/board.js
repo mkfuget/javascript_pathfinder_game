@@ -10,54 +10,6 @@ class Board {
         {
             this.boardCells[i] = new Array(width)
         }
-        for(let i=0; i<height; i++)
-        {
-            for(let j=0; j<width; j++)
-            {
-                switch(boardData[i][j])
-                {
-                    case 0:
-                        this.boardCells[i][j] = new cells.EmptyCell(j, i)
-                        break;
-                    case 1:
-                        this.boardCells[i][j] = new cells.WallCell(j, i)
-                        break;
-                    case "r":
-                        this.boardCells[i][j] = new cells.RedKeyCell(j, i)
-                        break;
-                    case "R":
-                        this.boardCells[i][j] = new cells.RedLockCell(j, i)
-                        break;
-                    case "b":
-                        this.boardCells[i][j] = new cells.BlueKeyCell(j, i)
-                        break;
-                    case "B":
-                        this.boardCells[i][j] = new cells.BlueLockCell(j, i)
-                        break;
-                    case "g":
-                        this.boardCells[i][j] = new cells.GreenKeyCell(j, i)
-                        break;
-                    case "G":
-                        this.boardCells[i][j] = new cells.GreenLockCell(j, i)
-                        break;
-                    case "y":
-                        this.boardCells[i][j] = new cells.YellowKeyCell(j, i)
-                        break;
-                    case "Y":
-                        this.boardCells[i][j] = new cells.YellowLockCell(j, i)
-                        break;
-            
-                    case "i":
-                        this.boardCells[i][j] = new cells.IceCell(j, i)
-                        break;
-                    case "f":
-                        this.boardCells[i][j] = new cells.FinishCell(j, i)
-                        break;
-
-                }
-            }
-        }
-
     }
     solveMaze(cursor, solveQueue)//returns one array of the squares in the path finding algorithm and one for the shortest path solution 
     {

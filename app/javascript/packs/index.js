@@ -2,6 +2,8 @@ import Board from'./board/board.js'
 import Cursor from './board/cursor.js'
 import anime from 'animejs/lib/anime.es.js';
 import PriorityQueue from "./PriorityQueue.js"
+import * as cells from "./board/cell.js"
+
 import blueLockImage from '../images/blue_lock.png'
 import RedKeyImage from '../images/red_key.png'
 
@@ -11,24 +13,31 @@ const MAZE_HEIGHT = 15;
 const MAZE_WIDTH = 20;
 
 let documentMain = document.querySelector("body");
+window.mouseDown = false;
+document.onmousedown = function() {
+    window.mouseDown = true;
+}
+document.onmouseup = function() {
+    window.mouseDown = false;
+}
 
 
 const mazeSquares = [
-    [ 0, 1, 1, 0, 1, 0, "i", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 0, 1, 1, 0, 1, 0, "i", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 0, 1, 1, 0, 1, 0, "i", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 0, 0, 0, 0, 1, 0, "i", 0, 0, "f", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 1, 0, 1, 0, 1, 0, "i", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 1, 0, 1, 0, 1, 0, "i", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ "r", 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 1, 1, 1, 0, "R", "b", "B", "R", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 1, 1, 1, 0, "R", "g", "G", "R", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 1, 1, 1, 0, "R", "y", "Y", "R", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 1, 1, 1, 0, "R", "R", "R", "R", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 1, 1, 1, 0, "R", "R", "R", "R", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [ 1, 1, 1, 0, "R", "R", "R", "R", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    [ "E", "W", "W", "E", "W", "E", "I", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "E", "W", "W", "E", "W", "E", "I", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "E", "W", "W", "E", "W", "E", "I", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "E", "E", "E", "E", "W", "E", "I", "E", "E", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "W", "E", "W", "E", "W", "E", "I", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "W", "E", "W", "E", "W", "E", "I", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "W", "E", "W", "E", "W", "E", "E", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "r", "E", "W", "E", "W", "E", "E", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "W", "W", "W", "E", "W", "E", "E", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "W", "W", "W", "E", "R", "b", "B", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "W", "W", "W", "E", "R", "g", "G", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "W", "W", "W", "E", "R", "y", "Y", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "W", "W", "W", "E", "R", "R", "R", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "W", "W", "W", "E", "R", "R", "R", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    [ "W", "W", "W", "E", "R", "R", "R", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
 ]
 const board = new Board(MAZE_WIDTH, MAZE_HEIGHT, mazeSquares)
 let testCursor = new Cursor(0, 0, board)
@@ -37,6 +46,77 @@ function dijkstraComparator(cursorA, cursorB)
     return cursorA.stepsTaken < cursorB.stepsTaken
 }
 let dijkstraQueue = new PriorityQueue(dijkstraComparator);
+function mapSymbolToCell(symbol, i, j)
+{
+    switch(symbol)
+    {
+        case "E":
+            return new cells.EmptyCell(j, i, symbol)
+            break;
+        case "W":
+            return new cells.WallCell(j, i, symbol)
+            break;
+        case "r":
+            return new cells.RedKeyCell(j, i, symbol)
+            break;
+        case "R":
+            return new cells.RedLockCell(j, i, symbol)
+            break;
+        case "b":
+            return new cells.BlueKeyCell(j, i, symbol)
+            break;
+        case "B":
+            return new cells.BlueLockCell(j, i, symbol)
+            break;
+        case "g":
+            return new cells.GreenKeyCell(j, i, symbol)
+            break;
+        case "G":
+            return new cells.GreenLockCell(j, i, symbol)
+            break;
+        case "y":
+            return new cells.YellowKeyCell(j, i, symbol)
+            break;
+        case "Y":
+            return new cells.YellowLockCell(j, i, symbol)
+            break;
+
+        case "I":
+            return new cells.IceCell(j, i, symbol)
+            break;
+        case "F":
+            return new cells.FinishCell(j, i, symbol)
+            break;
+    }
+}
+function addCellToBoard(board, symbol, i, j)
+{
+    board.boardCells[i][j] = mapSymbolToCell(symbol, i, j);
+    const cellId = "cell_"+(j+i*MAZE_WIDTH);
+    const cellImage = "cell_image_"+(j+i*MAZE_WIDTH);
+
+    let mazeCell = document.getElementById(cellId);
+    let mazeCellImage = document.getElementById(cellImage)
+    const currentCell = board.boardCells[i][j];
+    if(currentCell.CELL_IMAGE() !== "none")
+    {
+        mazeCellImage.style.background = currentCell.CELL_IMAGE();
+    }
+    mazeCell.style.backgroundColor = board.boardCells[i][j].CELL_COLOR();
+
+}
+function clickSetCell(board, i, j)
+{
+    let symbol = document.getElementById('selected_cell').value;
+    addCellToBoard(board, symbol, i, j)        
+}
+function hoverClickSetCell(board, i, j)
+{
+    if(window.mouseDown === true)
+    {
+        clickSetCell(board, i, j)
+    }
+}
 function addBoard(board)
 {
     let mazeTable = document.getElementById('maze_table');
@@ -50,24 +130,52 @@ function addBoard(board)
     {
         for(let j=0; j<20; j++)
         {
-            const cellId = "cell_"+(j+i*MAZE_WIDTH);
-            const cellImage = "cell_image_"+(j+i*MAZE_WIDTH);
-
+            const cellId = "cell_"+(j+i*MAZE_WIDTH);        
             let mazeCell = document.getElementById(cellId);
-            let mazeCellImage = document.getElementById("cell_image_0")
-            const currentCell = board.boardCells[i][j];
-            if(currentCell.CELL_IMAGE() !== "none")
-            {
-                document.getElementById(cellImage).style.background = currentCell.CELL_IMAGE();
-            }
-              
-            mazeCell.style.backgroundColor = board.boardCells[i][j].CELL_COLOR();
+            mazeCell.addEventListener("mouseenter", function(){hoverClickSetCell(board, i, j)});
+            mazeCell.addEventListener("mousedown", function(){clickSetCell(board, i, j)});
+
+            addCellToBoard(board, mazeSquares[i][j], i, j)
 
         }
     }
 
 }
 addBoard(board);
+function exportBoard(board)
+{
+    const url = '/boards'
+    const boardData = {
+        width: board.width,
+        height: board.height,
+        cells: []
+    }
+    for(let i=0; i<board.height; i++)
+    {
+        for(let j=0; j<board.width; j++)
+        {
+            boardData.cells.push({
+                type: board.boardCells[i][j].type,
+                board_index: board.toBoardIndex(j, i)
+            })
+        }
+    }
+    const boardConfigObject = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          
+        },
+        body: JSON.stringify(boardData)
+    };
+    fetch(url, boardConfigObject)
+        .then(resp => resp.json())
+        .then(json => console.log(json))
+        .catch(error => alert(error.message));
+
+
+}
 //Takes the result of an attempted move and animates it on the screen
 let animationQueue = [];
 function addToAnimationQueue(moveHash)
@@ -113,16 +221,29 @@ function animateSolution(solution)
     {
         const currentCursor = solution.searchPath[i]
         const boardIndex  = board.toBoardIndex(currentCursor.xIndex, currentCursor.yIndex);
-        const flashColor = 'rgba(179, 0, 255, 0.2)'
         const cell = document.getElementById(`cell_${boardIndex}`)
         const currentCellColor = `${cell.style.backgroundColor}`
         pathFindingAnimeTimeline.add({
             targets: cell,
             background: currentCursor.cursorColor(),
-            duration: 400,
+            duration: 300,
         }, 75*i)
 
     }
+    for(let i=0; i<solution.foundPath.length; i++)
+    {
+        const currentCell = solution.foundPath[i]
+        const boardIndex  = board.toBoardIndex(currentCell.xIndex, currentCell.yIndex);
+        const flashColor = '#FFFF00'
+        const cell = document.getElementById(`cell_${boardIndex}`)
+        pathFindingAnimeTimeline.add({
+            targets: cell,
+            background: flashColor,
+            duration: 300,
+        }, '-=150')
+
+    }
+
     
 }
 document.addEventListener('keypress', (e) =>{
@@ -142,6 +263,8 @@ document.addEventListener('keypress', (e) =>{
             break;
         case "p":
             animateSolution(board.solveMaze(testCursor, dijkstraQueue));
+        case "x":
+            exportBoard(board)
                                     
     }   
 

@@ -10,20 +10,21 @@ import yellowLockImage from '../../images/yellow_lock.png'
 
 import iceCellImage from '../../images/ice_cell.png'
 import wallCellImage from '../../images/wall_cell.png'
-
+import emptyCellImage from '../../images/empty_cell.png'
 export class Cell
 {
-    constructor(xIndex, yIndex)
+    constructor(xIndex, yIndex, type)
     {
         this.xIndex = xIndex
         this.yIndex = yIndex
+        this.type = type
     }
 }
 export class EmptyCell extends Cell
 {
     
     CELL_COLOR(){return "#FFFFFF";}
-    CELL_IMAGE(){return "none"}
+    CELL_IMAGE(){return `url(${emptyCellImage})`}
 
     movementAllowed(cursor)
     {
