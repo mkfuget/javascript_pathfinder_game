@@ -21,6 +21,41 @@ document.onmouseup = function() {
     window.mouseDown = false;
 }
 
+let userLeveLIndex = 0;
+let baseLeveLIndex = 0;
+
+
+let importData = {};
+let mainBoard = new Board(MAZE_WIDTH, MAZE_HEIGHT)
+
+function importBoards()
+{
+    const url = "api/v1/boards";
+    fetch(url)
+    .then(function(response) {
+        return response.json();
+      }).then(function(json) {
+          let userLevelCells = [];
+          let baseLevelCells = [];
+          for(let i=0; i<json.length; i++)
+          {
+            let cells = json[i].cells.map(x => x.cell_type)
+            if(json[i].board_type === "base")
+            {
+                baseLevelCells.push(cells)
+            }
+            else if(json[i].board_type === "user")
+            {
+                userLevelCells.push(cells)
+            }
+          }
+        importData = {
+            userLevels: userLevelCells,
+            baseLevels: baseLevelCells
+        };
+        addBoard(mainBoard, importData.baseLevels[baseLeveLIndex])
+      })
+}
 
 const mazeSquares = [
     [ "E", "W", "W", "E", "W", "E", "I", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
@@ -39,85 +74,84 @@ const mazeSquares = [
     [ "W", "W", "W", "E", "R", "R", "R", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
     [ "W", "W", "W", "E", "R", "R", "R", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
 ]
-const board = new Board(MAZE_WIDTH, MAZE_HEIGHT, mazeSquares)
-let testCursor = new Cursor(0, 0, board)
+let testCursor = new Cursor(0, 0, mainBoard)
 function dijkstraComparator(cursorA, cursorB)
 {
     return cursorA.stepsTaken < cursorB.stepsTaken
 }
 let dijkstraQueue = new PriorityQueue(dijkstraComparator);
-function mapSymbolToCell(symbol, i, j)
+function mapSymbolToCell(symbol, xIndex, yIndex)
 {
     switch(symbol)
     {
         case "E":
-            return new cells.EmptyCell(j, i, symbol)
+            return new cells.EmptyCell(xIndex, yIndex, symbol)
             break;
         case "W":
-            return new cells.WallCell(j, i, symbol)
+            return new cells.WallCell(xIndex, yIndex, symbol)
             break;
         case "r":
-            return new cells.RedKeyCell(j, i, symbol)
+            return new cells.RedKeyCell(xIndex, yIndex, symbol)
             break;
         case "R":
-            return new cells.RedLockCell(j, i, symbol)
+            return new cells.RedLockCell(xIndex, yIndex, symbol)
             break;
         case "b":
-            return new cells.BlueKeyCell(j, i, symbol)
+            return new cells.BlueKeyCell(xIndex, yIndex, symbol)
             break;
         case "B":
-            return new cells.BlueLockCell(j, i, symbol)
+            return new cells.BlueLockCell(xIndex, yIndex, symbol)
             break;
         case "g":
-            return new cells.GreenKeyCell(j, i, symbol)
+            return new cells.GreenKeyCell(xIndex, yIndex, symbol)
             break;
         case "G":
-            return new cells.GreenLockCell(j, i, symbol)
+            return new cells.GreenLockCell(xIndex, yIndex, symbol)
             break;
         case "y":
-            return new cells.YellowKeyCell(j, i, symbol)
+            return new cells.YellowKeyCell(xIndex, yIndex, symbol)
             break;
         case "Y":
-            return new cells.YellowLockCell(j, i, symbol)
+            return new cells.YellowLockCell(xIndex, yIndex, symbol)
             break;
 
         case "I":
-            return new cells.IceCell(j, i, symbol)
+            return new cells.IceCell(xIndex, yIndex, symbol)
             break;
         case "F":
-            return new cells.FinishCell(j, i, symbol)
+            return new cells.FinishCell(xIndex, yIndex, symbol)
             break;
     }
 }
-function addCellToBoard(board, symbol, i, j)
+function addCellToBoard(board, symbol, xIndex, yIndex)
 {
-    board.boardCells[i][j] = mapSymbolToCell(symbol, i, j);
-    const cellId = "cell_"+(j+i*MAZE_WIDTH);
-    const cellImage = "cell_image_"+(j+i*MAZE_WIDTH);
+    board.boardCells[yIndex][xIndex] = mapSymbolToCell(symbol, xIndex, yIndex);
+    const cellId = "cell_"+(xIndex+yIndex*MAZE_WIDTH);
+    const cellImage = "cell_image_"+(xIndex+yIndex*MAZE_WIDTH);
 
     let mazeCell = document.getElementById(cellId);
     let mazeCellImage = document.getElementById(cellImage)
-    const currentCell = board.boardCells[i][j];
+    const currentCell = board.boardCells[yIndex][xIndex];
     if(currentCell.CELL_IMAGE() !== "none")
     {
         mazeCellImage.style.background = currentCell.CELL_IMAGE();
     }
-    mazeCell.style.backgroundColor = board.boardCells[i][j].CELL_COLOR();
+    mazeCell.style.backgroundColor = board.boardCells[yIndex][xIndex].CELL_COLOR();
 
 }
-function clickSetCell(board, i, j)
+function clickSetCell(board, xIndex, yIndex)
 {
     let symbol = document.getElementById('selected_cell').value;
-    addCellToBoard(board, symbol, i, j)        
+    addCellToBoard(board, symbol, xIndex, yIndex)        
 }
-function hoverClickSetCell(board, i, j)
+function hoverClickSetCell(board, xIndex, yIndex)
 {
     if(window.mouseDown === true)
     {
-        clickSetCell(board, i, j)
+        clickSetCell(board, xIndex, yIndex)
     }
 }
-function addBoard(board)
+function addBoard(board, cellArray)
 {
     let mazeTable = document.getElementById('maze_table');
     let animatedCursor = document.createElement('div');
@@ -126,22 +160,20 @@ function addBoard(board)
     animatedCursor.style.top = '9px'
 
     mazeTable.append(animatedCursor)
-    for(let i=0; i<15; i++)
+    for(let i=0; i<MAZE_HEIGHT*MAZE_WIDTH; i++)
     {
-        for(let j=0; j<20; j++)
-        {
-            const cellId = "cell_"+(j+i*MAZE_WIDTH);        
-            let mazeCell = document.getElementById(cellId);
-            mazeCell.addEventListener("mouseenter", function(){hoverClickSetCell(board, i, j)});
-            mazeCell.addEventListener("mousedown", function(){clickSetCell(board, i, j)});
+        const cellId = "cell_"+i;        
+        let mazeCell = document.getElementById(cellId);
+        let xIndex = mainBoard.indexToXIndex(i);
+        let yIndex = mainBoard.indexToYIndex(i);
 
-            addCellToBoard(board, mazeSquares[i][j], i, j)
+        mazeCell.addEventListener("mouseenter", function(){hoverClickSetCell(board, xIndex, yIndex)});
+        mazeCell.addEventListener("mousedown", function(){clickSetCell(board, xIndex, yIndex)});
 
-        }
+        addCellToBoard(board, cellArray[i], xIndex, yIndex)
     }
 
 }
-addBoard(board);
 function exportBoard(board)
 {
     const url = 'api/v1/boards'
@@ -222,7 +254,7 @@ function animateSolution(solution)
     for(let i=0; i<solution.searchPath.length; i++)
     {
         const currentCursor = solution.searchPath[i]
-        const boardIndex  = board.toBoardIndex(currentCursor.xIndex, currentCursor.yIndex);
+        const boardIndex  = mainBoard.toBoardIndex(currentCursor.xIndex, currentCursor.yIndex);
         const cell = document.getElementById(`cell_${boardIndex}`)
         const currentCellColor = `${cell.style.backgroundColor}`
         pathFindingAnimeTimeline.add({
@@ -235,7 +267,7 @@ function animateSolution(solution)
     for(let i=0; i<solution.foundPath.length; i++)
     {
         const currentCell = solution.foundPath[i]
-        const boardIndex  = board.toBoardIndex(currentCell.xIndex, currentCell.yIndex);
+        const boardIndex  = mainBoard.toBoardIndex(currentCell.xIndex, currentCell.yIndex);
         const flashColor = '#FFFF00'
         const cell = document.getElementById(`cell_${boardIndex}`)
         pathFindingAnimeTimeline.add({
@@ -247,6 +279,10 @@ function animateSolution(solution)
     }
 
     
+}
+function loadLevel(cell_array)
+{
+    mainBoard = new
 }
 document.addEventListener('keypress', (e) =>{
     switch(e.key) 
@@ -264,12 +300,19 @@ document.addEventListener('keypress', (e) =>{
             addToAnimationQueue(testCursor.move(1, 0));
             break;
         case "p":
-            animateSolution(board.solveMaze(testCursor, dijkstraQueue));
+            animateSolution(mainBoard.solveMaze(testCursor, dijkstraQueue));
             break;
         case "x":
             exportBoard(board)
             break;
-                                    
+        case "i":
+            importBoards()
+            break;
+        case "c":
+            console.log(importData);
+            break;
+
+                                        
     }   
 
 
