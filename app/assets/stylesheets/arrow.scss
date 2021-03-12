@@ -1,0 +1,22 @@
+i {
+    border: solid rgb(62, 19, 182);
+    border-width: 0 6px 6px 0;
+    display: inline-block;
+    padding: 3px;
+ }
+ p {
+    font-size: 18px;
+    font-weight: 500;
+ }
+ .rightArrow {
+    transform: rotate(-45deg);
+ }
+ .leftArrow {
+    transform: rotate(135deg);
+ }
+ .upArrow {
+    transform: rotate(-135deg);
+ }
+ .downArrow {
+    transform: rotate(45deg);
+ }

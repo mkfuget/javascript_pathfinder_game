@@ -1,7 +1,7 @@
 import * as cells from "./cell.js"
 import PriorityQueue from "../PriorityQueue.js"
 class Board {
-    constructor(width, height, boardData)
+    constructor(width, height)
     {
         this.height = height;
         this.width = width;
@@ -10,6 +10,8 @@ class Board {
         {
             this.boardCells[i] = new Array(width)
         }
+        this.startXIndex = 0;
+        this.startYIndex = 0;
     }
     solveMaze(cursor, solveQueue)//returns one array of the squares in the path finding algorithm and one for the shortest path solution 
     {

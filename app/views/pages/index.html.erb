@@ -11,23 +11,35 @@
 
 <body>
   <div class="inner_content">
-    <table id="maze_table">
-    <% for i in 0..14 do %>
-      <tr id = "row_<%=i%>">
-      <% for j in 0..19 do %>
-        <td id = "cell_<%=i*20+j%>">
-          <div class = "cell_image" id = "cell_image_<%=i*20+j%>"></div>
-          <div class = "cell_background_color"id = "cell_background_color_<%=i*20+j%>"></div>
-        </td>
-      <%end%>
-      </tr>
-    <%end%>
+    <div id ="maze">
+    <div id = "animated_cursor"></div>
 
-    </table>
-    <button>Main Levels</button>
-    <button>User Levels</button>
-    <button>Create Level</button>
-    <select id="selected_cell">
+      <table id="maze_table">
+        <% for i in 0..14 do %>
+          <tr id = "row_<%=i%>">
+          <% for j in 0..19 do %>
+            <td id = "cell_<%=i*20+j%>">
+              <div class = "cell_image" id = "cell_image_<%=i*20+j%>"></div>
+              <div class = "cell_background_color"id = "cell_background_color_<%=i*20+j%>"></div>
+            </td>
+          <%end%>
+          </tr>
+        <%end%>
+
+      </table>
+    </div>
+    <div id = "user_levels_action_bar">
+      <i class="leftArrow" id = "user_level_down"></i>
+        Level: <span id = "current_user_level"></span>/<span id = "max_user_level"></span>
+      <i class="rightArrow" id = "user_level_up"></i>
+    </div>
+    <div id = "user_levels_action_bar">
+      <i class="leftArrow" id = "base_level_down"></i>
+        Level: <span id = "current_base_level"></span>/<span id = "max_base_level"></span>
+      <i class="rightArrow" id = "base_level_up"></i>
+    </div>
+    <div id = "edit_mode_action_bar">
+      <select id="selected_cell">
         <option value = "E">Empty Cell</option>
         <option value = "W">Wall Cell</option>
         <option value = "R">Red Lock</option>
@@ -40,9 +52,15 @@
         <option value = "y">Yellow Lock</option>
 
         <option value = "I">Ice Cell</option>
+        <option value = "S">Start Cell</option>
         <option value = "F">Finish Cell</option>
+      </select>
+    </div>
 
-    </select>
+    <br>
+    <button>Main Levels</button>
+    <button>User Levels</button>
+    <button>Create Level</button>
   </div>
 
 </body>

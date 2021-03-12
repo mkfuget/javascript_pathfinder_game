@@ -1,9 +1,9 @@
 class Cursor {
 
-    constructor(xIndex, yIndex, board)
+    constructor(board)
     {
-        this.xIndex = xIndex;
-        this.yIndex = yIndex;
+        this.xIndex = board.startXIndex;
+        this.yIndex = board.startYIndex;
         this.board = board;
         this.bitMask = 0;
         this.stepsTaken = 0;
@@ -40,15 +40,27 @@ class Cursor {
 
     copyConstructor()
     {
-        let out = new Cursor(this.xIndex, this.yIndex, this.board);
+        let out = new Cursor(this.board);
         out.bitMask = this.bitMask;
         out.puzzleSolved = this.puzzleSolved;
         out.stepsTaken = this.stepsTaken;
+        out.xIndex = this.xIndex;
+        out.yIndex = this.yIndex;
         return out;
     }
     boardIndex()
     {
         return this.board.toBoardIndex(this.xIndex, this.yIndex)
+    }
+    reset()
+    {
+        this.xIndex = this.board.startXIndex;
+        this.yIndex = this.board.startYIndex;
+
+        this.bitMask = 0;
+        this.stepsTaken = 0;
+        this.puzzleSolved = false;
+
     }
     cursorColor(){
         let out = "";

@@ -193,6 +193,32 @@ export class IceCell extends Cell
         }
     }
 }
+export class StartCell extends Cell
+{
+    CELL_COLOR(){return "#B0B0B0";}
+    CELL_IMAGE(){return "none"}
+
+    movementAllowed(cursor)
+    {
+        return true;
+    }
+    takeCursor(cursor)
+    {
+        cursor.puzzleSolved = true;
+        let xStart = cursor.xIndex
+        let yStart = cursor.yIndex
+        cursor.xIndex = this.xIndex
+        cursor.yIndex = this.yIndex
+        return {
+            type: "success",
+            movementType: "slide",
+            deltaX: cursor.xIndex - xStart,
+            deltaY: cursor.yIndex - yStart,
+            keysUnlocked: "none"
+        }    
+    }
+
+}
 
 export class FinishCell extends Cell
 {
