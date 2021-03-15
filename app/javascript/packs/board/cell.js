@@ -121,25 +121,25 @@ export class KeyCell extends Cell
 }
 export class RedLockCell extends LockCell
 {
-    CELL_COLOR(){return "FF0000";}
+    CELL_COLOR(){return "#FFFFFF";}
     CELL_IMAGE(){return `url(${redLockImage})`}
     BIT_VALUE(){return 1}
 }
 export class RedKeyCell extends KeyCell
 {
-    CELL_COLOR(){return "FF0000";}
+    CELL_COLOR(){return "#FFFFFF";}
     CELL_IMAGE(){return `url(${redKeyImage})`}
     BIT_VALUE(){return 1}
 }
 export class BlueLockCell extends LockCell
 {
-    CELL_COLOR(){return "FF0000";}
+    CELL_COLOR(){return "#FFFFFF";}
     CELL_IMAGE(){return `url(${blueLockImage})`}
     BIT_VALUE(){return 2}
 }
 export class BlueKeyCell extends KeyCell
 {
-    CELL_COLOR(){return "FF0000";}
+    CELL_COLOR(){return "#FFFFFF";}
     CELL_IMAGE(){return `url(${blueKeyImage})`}
     BIT_VALUE(){return 2}
 }
@@ -151,19 +151,19 @@ export class GreenLockCell extends LockCell
 }
 export class GreenKeyCell extends KeyCell
 {
-    CELL_COLOR(){return "FF0000";}
+    CELL_COLOR(){return "#FFFFFF";}
     CELL_IMAGE(){return `url(${greenKeyImage})`}
     BIT_VALUE(){return 4}
 }
 export class YellowLockCell extends LockCell
 {
-    CELL_COLOR(){return "FF0000";}
+    CELL_COLOR(){return "#FFFFFF";}
     CELL_IMAGE(){return `url(${yellowLockImage})`}
     BIT_VALUE(){return 8}
 }
 export class YellowKeyCell extends KeyCell
 {
-    CELL_COLOR(){return "FF0000";}
+    CELL_COLOR(){return "#FFFFFF";}
     CELL_IMAGE(){return `url(${yellowKeyImage})`}
     BIT_VALUE(){return 8}
 }
@@ -198,7 +198,7 @@ export class IceCell extends Cell
 }
 export class StartCell extends Cell
 {
-    CELL_COLOR(){return "#B0B0B0";}
+    CELL_COLOR(){return "#FFFFFF";}
     CELL_IMAGE(){return `url(${startCellImage}`}
 
     movementAllowed(cursor)
@@ -225,7 +225,7 @@ export class StartCell extends Cell
 
 export class FinishCell extends Cell
 {
-    CELL_COLOR(){return "#B0B0B0";}
+    CELL_COLOR(){return "#FFFFFF";}
     CELL_IMAGE(){return `url(${finishCellImage}`}
 
     movementAllowed(cursor)
