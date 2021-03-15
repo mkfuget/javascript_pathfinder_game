@@ -11,6 +11,9 @@ import yellowLockImage from '../../images/yellow_lock.png'
 import iceCellImage from '../../images/ice_cell.png'
 import wallCellImage from '../../images/wall_cell.png'
 import emptyCellImage from '../../images/empty_cell.png'
+import startCellImage from '../../images/start_cell.png'
+import finishCellImage from '../../images/finish_cell.png'
+
 export class Cell
 {
     constructor(xIndex, yIndex, type)
@@ -196,7 +199,7 @@ export class IceCell extends Cell
 export class StartCell extends Cell
 {
     CELL_COLOR(){return "#B0B0B0";}
-    CELL_IMAGE(){return "none"}
+    CELL_IMAGE(){return `url(${startCellImage}`}
 
     movementAllowed(cursor)
     {
@@ -223,7 +226,7 @@ export class StartCell extends Cell
 export class FinishCell extends Cell
 {
     CELL_COLOR(){return "#B0B0B0";}
-    CELL_IMAGE(){return "none"}
+    CELL_IMAGE(){return `url(${finishCellImage}`}
 
     movementAllowed(cursor)
     {

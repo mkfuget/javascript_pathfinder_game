@@ -27,7 +27,7 @@ let userLevelIndex = 0;
 let baseLevelIndex = 0;
 let userLevelMax = 0;
 let baseLevelMax = 0;
-
+let gameMode = "baseLevels"
 let importData = {};
 
 let mainBoard = new Board(MAZE_WIDTH, MAZE_HEIGHT)
@@ -58,6 +58,7 @@ function importBoards()
             userLevels: userLevelCells,
             baseLevels: baseLevelCells
         };
+        addBoardData(mainBoard, importData.baseLevels[baseLevelIndex])
         addBoard(mainBoard, mainCursor, importData.baseLevels[baseLevelIndex])
         userLevelMax = importData.userLevels.length;
         baseLevelMax = importData.baseLevels.length;
@@ -70,52 +71,42 @@ function importBoards()
         document.getElementById('user_level_down').addEventListener("click", function(){
             if(userLevelIndex>0)
             {
-                addBoard(mainBoard, mainCursor, importData.userLevels[--userLevelIndex])
+                addBoardData(mainBoard, importData.userLevels[--userLevelIndex])
+                addBoard(mainBoard, mainCursor)
                 document.getElementById('current_user_level').innerHTML = userLevelIndex + 1;
             }
         })
         document.getElementById('user_level_up').addEventListener("click", function(){
             if(userLevelIndex<userLevelMax-1)
             {
-                addBoard(mainBoard, mainCursor, importData.userLevels[++userLevelIndex])
+                addBoardData(mainBoard, importData.userLevels[++userLevelIndex])
+                addBoard(mainBoard, mainCursor)
                 document.getElementById('current_user_level').innerHTML = userLevelIndex + 1;
             }
         })
         document.getElementById('base_level_down').addEventListener("click", function(){
             if(baseLevelIndex>0)
             {
-                addBoard(mainBoard, mainCursor, importData.baseLevels[--baseLevelIndex])
+                addBoardData(mainBoard, importData.baseLevels[--baseLevelIndex])
+                addBoard(mainBoard, mainCursor)
                 document.getElementById('current_base_level').innerHTML = baseLevelIndex + 1;
             }
         })
         document.getElementById('base_level_up').addEventListener("click", function(){
             if(baseLevelIndex<baseLevelMax-1)
             {
-                addBoard(mainBoard, mainCursor, importData.baseLevels[++baseLevelIndex])
+                addBoardData(mainBoard, importData.baseLevels[++baseLevelIndex])
+                addBoard(mainBoard, mainCursor)
                 document.getElementById('current_base_level').innerHTML = baseLevelIndex + 1;
             }
         })
-
+        setGameMode('baseLevels')
+        document.getElementById('user_levels_button').addEventListener("click", function(){setGameMode('userLevels')});
+        document.getElementById('base_levels_button').addEventListener("click", function(){setGameMode('baseLevels')});;
+        document.getElementById('edit_mode_button').addEventListener("click", function(){setGameMode('editMode')});;
+    
       })
 }
-
-const mazeSquares = [
-    [ "E", "W", "W", "E", "W", "E", "I", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "E", "W", "W", "E", "W", "E", "I", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "E", "W", "W", "E", "W", "E", "I", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "E", "E", "E", "E", "W", "E", "I", "E", "E", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "W", "E", "W", "E", "W", "E", "I", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "W", "E", "W", "E", "W", "E", "I", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "W", "E", "W", "E", "W", "E", "E", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "r", "E", "W", "E", "W", "E", "E", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "W", "W", "W", "E", "W", "E", "E", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "W", "W", "W", "E", "R", "b", "B", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "W", "W", "W", "E", "R", "g", "G", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "W", "W", "W", "E", "R", "y", "Y", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "W", "W", "W", "E", "R", "R", "R", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "W", "W", "W", "E", "R", "R", "R", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    [ "W", "W", "W", "E", "R", "R", "R", "R", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
-]
 function dijkstraComparator(cursorA, cursorB)
 {
     return cursorA.stepsTaken < cursorB.stepsTaken
@@ -167,9 +158,8 @@ function mapSymbolToCell(symbol, xIndex, yIndex)
             break;
     }
 }
-function addCellToBoard(board, symbol, xIndex, yIndex)
+function addCellToBoard(board, xIndex, yIndex)
 {
-    board.boardCells[yIndex][xIndex] = mapSymbolToCell(symbol, xIndex, yIndex);
     const cellId = "cell_"+(xIndex+yIndex*MAZE_WIDTH);
     const cellImage = "cell_image_"+(xIndex+yIndex*MAZE_WIDTH);
 
@@ -195,18 +185,28 @@ function hoverClickSetCell(board, xIndex, yIndex)
         clickSetCell(board, xIndex, yIndex)
     }
 }
-function setCursorToStart(cursor)
+function addBoardData(board, cellArray)
 {
-    cursor.reset();
-    let animatedCursor = document.getElementById('animated_cursor');
-    animatedCursor.style.transform = 'translate(0px)';
-    animatedCursor.style.left = `${cursor.xIndex + START_X_COORDINATE}px`
-    animatedCursor.style.top = `${cursor.yIndex + START_Y_COORDINATE}px`
+    for(let i=0; i<board.width*board.height; i++)
+    {
+        let symbol = cellArray[i]
+        let xIndex = board.indexToXIndex(i);
+        let yIndex = board.indexToYIndex(i);
+
+        board.boardCells[yIndex][xIndex] = mapSymbolToCell(symbol, xIndex, yIndex);
+        if(symbol === "S")
+        {
+            board.startXIndex = xIndex;
+            board.startYIndex = yIndex;
+        }
+
+    }
 }
-function addBoard(board, cursor, cellArray)
+//takes a already filled in board and adds that data to the screen
+function addBoard(board, cursor)
 {
     let mazeTable = document.getElementById('maze_table');
-    for(let i=0; i<MAZE_HEIGHT*MAZE_WIDTH; i++)
+    for(let i=0; i<board.width*board.height; i++)
     {
         const cellId = "cell_"+i;        
         let mazeCell = document.getElementById(cellId);
@@ -215,14 +215,7 @@ function addBoard(board, cursor, cellArray)
 
         mazeCell.addEventListener("mouseenter", function(){hoverClickSetCell(board, xIndex, yIndex)});
         mazeCell.addEventListener("mousedown", function(){clickSetCell(board, xIndex, yIndex)});
-
-        let symbol = cellArray[i];
-        if(symbol === "S")
-        {
-            mainBoard.startXIndex = xIndex;
-            mainBoard.startYIndex = yIndex;
-        }
-        addCellToBoard(board, cellArray[i], xIndex, yIndex)
+        addCellToBoard(board, xIndex, yIndex)
     }
     cursor.reset();
     let animatedCursor = document.getElementById('animated_cursor');
@@ -231,6 +224,61 @@ function addBoard(board, cursor, cellArray)
     animatedCursor.style.top = `${cursor.yIndex + START_Y_COORDINATE}px`
 
 }
+
+function setGameMode(mode)
+{
+    let userLevelsActionBar = document.getElementById('user_levels_action_bar');
+    let baseLevelsActionBar = document.getElementById('base_levels_action_bar');
+    let editModeActionBar = document.getElementById('edit_mode_action_bar');
+
+    let userLevelsButton = document.getElementById('user_levels_button');
+    let baseLevelsButton = document.getElementById('base_levels_button');
+    let editModeButton = document.getElementById('edit_mode_button');
+
+    switch(mode)
+    {
+        case 'baseLevels': 
+            gameMode = 'baseLevels'
+
+            baseLevelsActionBar.style.display = 'block'
+            userLevelsActionBar.style.display= 'none'
+            editModeActionBar.style.display = 'none'
+
+            baseLevelsButton.className = 'selected'
+            userLevelsButton.className = 'deselected'
+            editModeButton.className = 'deselected'
+
+            break;
+
+        case 'userLevels':
+            gameMode = 'userLevels'
+
+            baseLevelsActionBar.style.display = 'none'
+            userLevelsActionBar.style.display= 'block'
+            editModeActionBar.style.display = 'none'
+
+            baseLevelsButton.className = 'deselected'
+            userLevelsButton.className = 'selected'
+            editModeButton.className = 'deselected'
+
+            break;
+
+        case 'editMode':
+            gameMode = 'editMode'
+
+            baseLevelsActionBar.style.display = 'none'
+            userLevelsActionBar.style.display= 'none'
+            editModeActionBar.style.display = 'block'
+
+            baseLevelsButton.className = 'deselected'
+            userLevelsButton.className = 'deselected'
+            editModeButton.className = 'selected'
+            
+            break;
+
+    }
+}
+
 function exportBoard(board)
 {
     const url = 'api/v1/boards'
@@ -313,7 +361,6 @@ function animateSolution(solution)
         const currentCursor = solution.searchPath[i]
         const boardIndex  = mainBoard.toBoardIndex(currentCursor.xIndex, currentCursor.yIndex);
         const cell = document.getElementById(`cell_${boardIndex}`)
-        const currentCellColor = `${cell.style.backgroundColor}`
         pathFindingAnimeTimeline.add({
             targets: cell,
             background: currentCursor.cursorColor(),
@@ -359,11 +406,8 @@ document.addEventListener('keypress', (e) =>{
         case "x":
             exportBoard(board)
             break;
-        case "i":
-            importBoards()
-            break;
-        case "c":
-            addBoard(mainBoard, mainCursor, importData.baseLevels[++baseLeveLIndex]);
+        case "r":
+            addBoard(mainBoard, mainCursor)
             break;
 
                                         
