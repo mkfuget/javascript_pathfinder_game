@@ -118,5 +118,10 @@ class Cursor {
         return out;
 
     }
+    keysUnlockedColor()
+    {
+        let out = "";
+        
+    }
 }
 export default Cursor;

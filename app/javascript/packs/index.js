@@ -13,9 +13,9 @@ const MAZE_HEIGHT = 15;
 const MAZE_WIDTH = 20;
 const START_X_COORDINATE = 15;
 const START_Y_COORDINATE = 35;
-
-const EMPTY_CELL_ARRAY = Array(MAZE_HEIGHT).fill(0).map(x => Array(MAZE_WIDTH).fill('e'))
-
+const CELL_WIDTH = 40;
+const EMPTY_CELL_ARRAY = Array(MAZE_HEIGHT*MAZE_WIDTH).fill('E')
+console.log(EMPTY_CELL_ARRAY)
 let documentMain = document.querySelector("body");
 window.mouseDown = false;
 document.onmousedown = function() {
@@ -215,8 +215,8 @@ function resetMainCursor(cursor)
     cursor.reset();
     let animatedCursor = document.getElementById('animated_cursor');
     animatedCursor.style.transform = 'translate(0px)';
-    animatedCursor.style.left = `${cursor.xIndex + START_X_COORDINATE}px`
-    animatedCursor.style.top = `${cursor.yIndex + START_Y_COORDINATE}px`
+    animatedCursor.style.left = `${cursor.xIndex*CELL_WIDTH + START_X_COORDINATE}px`
+    animatedCursor.style.top = `${cursor.yIndex*CELL_WIDTH + START_Y_COORDINATE}px`
     document.getElementById('top_left').style.backgroundColor = "gray"
     document.getElementById('top_right').style.backgroundColor = "gray"
     document.getElementById('bottom_left').style.backgroundColor = "gray"
@@ -369,8 +369,8 @@ function dequeueAnimationQueue()
 {
     let moveHash = animationQueue[0];
     const animatedCursor = document.getElementById('animated_cursor')
-    const deltaXCoord = moveHash.deltaX*40;
-    const deltaYCoord = moveHash.deltaY*40;
+    const deltaXCoord = moveHash.deltaX*CELL_WIDTH;
+    const deltaYCoord = moveHash.deltaY*CELL_WIDTH;
     const animation = anime({
         targets: animatedCursor,
         translateX: `+=${deltaXCoord}px`,

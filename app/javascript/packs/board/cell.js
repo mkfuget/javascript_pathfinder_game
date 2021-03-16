@@ -207,14 +207,13 @@ export class StartCell extends Cell
     }
     takeCursor(cursor)
     {
-        cursor.puzzleSolved = true;
         let xStart = cursor.xIndex
         let yStart = cursor.yIndex
         cursor.xIndex = this.xIndex
         cursor.yIndex = this.yIndex
         return {
             type: "success",
-            movementType: "slide",
+            movementType: "normal",
             deltaX: cursor.xIndex - xStart,
             deltaY: cursor.yIndex - yStart,
             keysUnlocked: "none"
@@ -241,7 +240,7 @@ export class FinishCell extends Cell
         cursor.yIndex = this.yIndex
         return {
             type: "success",
-            movementType: "slide",
+            movementType: "normal",
             deltaX: cursor.xIndex - xStart,
             deltaY: cursor.yIndex - yStart,
             keysUnlocked: "none"
