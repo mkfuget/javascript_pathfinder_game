@@ -111,15 +111,20 @@ class Board {
         return (Math.abs(xIndex-this.finishXIndex) + Math.abs(yIndex-this.finishYIndex))
     }
 
-    aStarSearchWeak(cursor)
+    aStarSearch(cursor, weight)
     {
-        function aStarSearchWeakComparator(cursorA, cursorB)
+        function aStarSearchComparator(cursorA, cursorB)
         {
-            return (cursorA.stepsTaken + cursorA.board.manhattanDistanceToFinish(cursorA.xIndex, cursorA.yIndex)) < (cursorB.stepsTaken + cursorB.board.manhattanDistanceToFinish(cursorB.xIndex, cursorB.yIndex))
+            let aStarDistanceA = cursorA.stepsTaken + weight*cursorA.board.manhattanDistanceToFinish(cursorA.xIndex, cursorA.yIndex);
+            let aStarDistanceB = cursorB.stepsTaken + weight*cursorB.board.manhattanDistanceToFinish(cursorB.xIndex, cursorB.yIndex);
+
+            return (aStarDistanceA === aStarDistanceB ? (cursorA.stepsTaken < cursorB.stepsTaken) : (aStarDistanceA < aStarDistanceB))
         }
-        let aStarSearchWeak = new PriorityQueue(aStarSearchWeakComparator);
-        return this.solveMaze(cursor, aStarSearchWeak)
+        let aStarSearcQueue = new PriorityQueue(aStarSearchComparator);
+        return this.solveMaze(cursor, aStarSearcQueue)
     }
+
+
 
     indexToXIndex(index)
     {

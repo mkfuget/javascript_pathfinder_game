@@ -417,9 +417,12 @@ document.addEventListener('keypress', (e) =>{
             }
             else if(document.getElementById('a_star_search_weak').checked)
             {
-                animateSolution(mainBoard.aStarSearchWeak(mainCursor));
+                animateSolution(mainBoard.aStarSearch(mainCursor, 1));
             }
-
+            else if(document.getElementById('a_star_search_strong').checked)
+            {
+                animateSolution(mainBoard.aStarSearch(mainCursor, 3));
+            }
             break;
         case "x":
             exportBoard(mainBoard)
