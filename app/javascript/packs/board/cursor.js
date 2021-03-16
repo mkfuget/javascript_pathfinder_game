@@ -118,10 +118,30 @@ class Cursor {
         return out;
 
     }
-    keysUnlockedColor()
+    static keysUnlockedColor(bitMask)
     {
         let out = "";
-        
+        if(bitMask == 0)
+        {
+            out = `rgb(255, 255, 0)`
+        }
+        if(bitMask == 1 || bitMask == 2 || bitMask == 4 || bitMask == 8)
+        {
+            out = `rgb(255, 204, 0)`
+        }
+        if(bitMask == 3 || bitMask == 5 || bitMask == 9 || bitMask == 6 || bitMask == 10 || bitMask == 12)
+        {
+            out = `rgb(255, 153, 51)`
+        }
+        if(bitMask == 7 || bitMask == 11 || bitMask == 13 || bitMask == 14)
+        {
+            out = `rgb(255, 102, 0)`
+        }
+        if(bitMask == 15)
+        {
+            out = `rgb(255, 51, 0)`
+        }
+        return out;
     }
 }
 export default Cursor;

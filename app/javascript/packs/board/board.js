@@ -69,7 +69,8 @@ class Board {
         let pathFound = [
             {
                 xIndex: finishCursor.xIndex,
-                yIndex: finishCursor.yIndex
+                yIndex: finishCursor.yIndex,
+                bitMask: finishCursor.bitMask
             }
         ];
         if(finishCursor.puzzleSolved)
@@ -78,7 +79,8 @@ class Board {
             {
                 pathFound.push({
                     xIndex: currentCell.lastXIndex,
-                    yIndex: currentCell.lastYIndex
+                    yIndex: currentCell.lastYIndex,
+                    bitMask: currentCell.lastBitMask
                 })
                 currentCell = pathTravelled[currentCell.lastYIndex][currentCell.lastXIndex][currentCell.lastBitMask]    
             }

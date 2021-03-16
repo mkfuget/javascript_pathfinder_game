@@ -415,7 +415,7 @@ function animateSolution(solution)
         const cell = document.getElementById(`cell_${boardIndex}`)
         pathFindingAnimeTimeline.add({
             targets: cell,
-            background: flashColor,
+            background: Cursor.keysUnlockedColor(currentCell.bitMask),
             duration: 300,
         }, '-=150')
 
