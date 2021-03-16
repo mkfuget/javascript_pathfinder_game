@@ -14,6 +14,8 @@ const MAZE_WIDTH = 20;
 const START_X_COORDINATE = 15;
 const START_Y_COORDINATE = 35;
 
+const EMPTY_CELL_ARRAY = Array(MAZE_HEIGHT).fill(0).map(x => Array(MAZE_WIDTH).fill('e'))
+
 let documentMain = document.querySelector("body");
 window.mouseDown = false;
 document.onmousedown = function() {
@@ -208,9 +210,22 @@ function addBoardData(board, cellArray)
     }
 }
 //takes a already filled in board and adds that data to the screen
+function resetMainCursor(cursor)
+{
+    cursor.reset();
+    let animatedCursor = document.getElementById('animated_cursor');
+    animatedCursor.style.transform = 'translate(0px)';
+    animatedCursor.style.left = `${cursor.xIndex + START_X_COORDINATE}px`
+    animatedCursor.style.top = `${cursor.yIndex + START_Y_COORDINATE}px`
+    document.getElementById('top_left').style.backgroundColor = "gray"
+    document.getElementById('top_right').style.backgroundColor = "gray"
+    document.getElementById('bottom_left').style.backgroundColor = "gray"
+    document.getElementById('bottom_right').style.backgroundColor = "gray"
+
+
+}
 function addBoard(board, cursor)
 {
-    let mazeTable = document.getElementById('maze_table');
     for(let i=0; i<board.width*board.height; i++)
     {
         const cellId = "cell_"+i;        
@@ -222,11 +237,7 @@ function addBoard(board, cursor)
         mazeCell.addEventListener("mousedown", function(){clickSetCell(board, xIndex, yIndex)});
         addCellToBoard(board, xIndex, yIndex)
     }
-    cursor.reset();
-    let animatedCursor = document.getElementById('animated_cursor');
-    animatedCursor.style.transform = 'translate(0px)';
-    animatedCursor.style.left = `${cursor.xIndex + START_X_COORDINATE}px`
-    animatedCursor.style.top = `${cursor.yIndex + START_Y_COORDINATE}px`
+    resetMainCursor(cursor)
 
 }
 
@@ -279,6 +290,9 @@ function setGameMode(mode)
             userLevelsButton.className = 'deselected'
             editModeButton.className = 'selected'
 
+            addBoardData(mainBoard, EMPTY_CELL_ARRAY);
+            addBoard(mainBoard, mainCursor);
+
             break;
 
     }
@@ -322,6 +336,24 @@ function exportBoard(board)
 }
 //Takes the result of an attempted move and animates it on the screen
 let animationQueue = [];
+function unlockAnimateUnlockCursorKey(value)
+{
+    switch(value)
+    {
+        case 1:
+            document.getElementById("top_left").style.backgroundColor = "red"
+            break;
+        case 2:
+            document.getElementById("top_right").style.backgroundColor = "blue"
+            break;
+        case 4:
+            document.getElementById("bottom_left").style.backgroundColor = "green"
+            break;
+        case 8:
+            document.getElementById("bottom_right").style.backgroundColor = "yellow"
+            break;
+    }
+}
 function addToAnimationQueue(moveHash)
 {
     if(moveHash.type == "success")
@@ -349,6 +381,7 @@ function dequeueAnimationQueue()
     animation.finished.then(function()
     {
         animationQueue.shift();
+        unlockAnimateUnlockCursorKey(moveHash.keysUnlocked);
         if(animationQueue.length > 0)
         {
             dequeueAnimationQueue()

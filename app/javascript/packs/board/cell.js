@@ -115,7 +115,7 @@ export class KeyCell extends Cell
             movementType: "normal",
             deltaX: cursor.xIndex - xStart,
             deltaY: cursor.yIndex - yStart,
-            keysUnlocked: "red"
+            keysUnlocked: this.BIT_VALUE()
         }
     }
 }

@@ -58,10 +58,31 @@ table td{
 #animated_cursor {
     width: 20px;
     height: 20px;
+    grid-template-columns: 10px 10px;
+
     background-color: gray;
     position: relative;
+    display:grid;
+    grid-row: auto auto;
+
     z-index: 1;
 }
+div.cursor_quarter {
+    z-index: 2;
+}
+#top_left {
+    background-color: red;
+}
+#top_right {
+    background-color: blue;
+}
+#bottom_left {
+    background-color: green;
+}
+#bottom_right {
+    background-color: yellow;
+}
+
 .grid-container {
     display: grid;
     grid-template-columns: 900px 100px;
