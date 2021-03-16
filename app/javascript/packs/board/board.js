@@ -97,6 +97,16 @@ class Board {
         let dijkstraQueue = new PriorityQueue(dijkstraComparator);
         return this.solveMaze(cursor, dijkstraQueue)
     }
+    depthFirstSearch(cursor)
+    {
+        function depthFirstSearchComparator(cursorA, cursorB)
+        {
+            return cursorA.stepsTaken > cursorB.stepsTaken
+        }
+        let depthFirstSearchQueue = new PriorityQueue(depthFirstSearchComparator);
+        return this.solveMaze(cursor, depthFirstSearchQueue)
+    }
+
     indexToXIndex(index)
     {
         return index%this.width;

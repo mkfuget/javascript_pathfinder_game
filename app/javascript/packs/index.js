@@ -407,7 +407,14 @@ document.addEventListener('keypress', (e) =>{
             addToAnimationQueue(mainCursor.move(1, 0));
             break;
         case "p":
-            animateSolution(mainBoard.dijsktra(mainCursor));
+            if(document.getElementById('dijkstra').checked)
+            {
+                animateSolution(mainBoard.dijsktra(mainCursor));
+            }
+            else if(document.getElementById('depth_first_search'))
+            {
+                animateSolution(mainBoard.depthFirstSearch(mainCursor));
+            }
             break;
         case "x":
             exportBoard(mainBoard)
