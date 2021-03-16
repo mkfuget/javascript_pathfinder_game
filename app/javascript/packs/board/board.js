@@ -106,6 +106,20 @@ class Board {
         let depthFirstSearchQueue = new PriorityQueue(depthFirstSearchComparator);
         return this.solveMaze(cursor, depthFirstSearchQueue)
     }
+    manhattanDistanceToFinish(xIndex, yIndex)
+    {
+        return (Math.abs(xIndex-this.finishXIndex) + Math.abs(yIndex-this.finishYIndex))
+    }
+
+    aStarSearchWeak(cursor)
+    {
+        function aStarSearchWeakComparator(cursorA, cursorB)
+        {
+            return (cursorA.stepsTaken + cursorA.board.manhattanDistanceToFinish(cursorA.xIndex, cursorA.yIndex)) < (cursorB.stepsTaken + cursorB.board.manhattanDistanceToFinish(cursorB.xIndex, cursorB.yIndex))
+        }
+        let aStarSearchWeak = new PriorityQueue(aStarSearchWeakComparator);
+        return this.solveMaze(cursor, aStarSearchWeak)
+    }
 
     indexToXIndex(index)
     {

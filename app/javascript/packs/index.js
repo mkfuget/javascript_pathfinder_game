@@ -411,10 +411,15 @@ document.addEventListener('keypress', (e) =>{
             {
                 animateSolution(mainBoard.dijsktra(mainCursor));
             }
-            else if(document.getElementById('depth_first_search'))
+            else if(document.getElementById('depth_first_search').checked)
             {
                 animateSolution(mainBoard.depthFirstSearch(mainCursor));
             }
+            else if(document.getElementById('a_star_search_weak').checked)
+            {
+                animateSolution(mainBoard.aStarSearchWeak(mainCursor));
+            }
+
             break;
         case "x":
             exportBoard(mainBoard)
