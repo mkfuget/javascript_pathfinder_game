@@ -145,7 +145,7 @@ export class BlueKeyCell extends KeyCell
 }
 export class GreenLockCell extends LockCell
 {
-    CELL_COLOR(){return "FF0000";}
+    CELL_COLOR(){return "#FFFFFF";}
     CELL_IMAGE(){return `url(${greenLockImage})`}
     BIT_VALUE(){return 4}
 }

@@ -107,11 +107,6 @@ function importBoards()
     
       })
 }
-function dijkstraComparator(cursorA, cursorB)
-{
-    return cursorA.stepsTaken < cursorB.stepsTaken
-}
-let dijkstraQueue = new PriorityQueue(dijkstraComparator);
 function mapSymbolToCell(symbol, xIndex, yIndex)
 {
     switch(symbol)
@@ -176,7 +171,8 @@ function addCellToBoard(board, xIndex, yIndex)
 function clickSetCell(board, xIndex, yIndex)
 {
     let symbol = document.getElementById('selected_cell').value;
-    addCellToBoard(board, symbol, xIndex, yIndex)        
+    addCellData(board, symbol, board.toBoardIndex(xIndex, yIndex));
+    addCellToBoard(board, xIndex, yIndex)        
 }
 function hoverClickSetCell(board, xIndex, yIndex)
 {
@@ -185,21 +181,30 @@ function hoverClickSetCell(board, xIndex, yIndex)
         clickSetCell(board, xIndex, yIndex)
     }
 }
+function addCellData(board, symbol, i)
+{
+    let xIndex = board.indexToXIndex(i);
+    let yIndex = board.indexToYIndex(i);
+
+    board.boardCells[yIndex][xIndex] = mapSymbolToCell(symbol, xIndex, yIndex);
+    if(symbol === "S")
+    {
+        board.startXIndex = xIndex;
+        board.startYIndex = yIndex;
+    }
+    if(symbol === "F")
+    {
+        board.finishXIndex = xIndex;
+        board.finishYIndex = yIndex;
+    }
+
+}
 function addBoardData(board, cellArray)
 {
     for(let i=0; i<board.width*board.height; i++)
     {
         let symbol = cellArray[i]
-        let xIndex = board.indexToXIndex(i);
-        let yIndex = board.indexToYIndex(i);
-
-        board.boardCells[yIndex][xIndex] = mapSymbolToCell(symbol, xIndex, yIndex);
-        if(symbol === "S")
-        {
-            board.startXIndex = xIndex;
-            board.startYIndex = yIndex;
-        }
-
+        addCellData(board, symbol, i)
     }
 }
 //takes a already filled in board and adds that data to the screen
@@ -273,7 +278,7 @@ function setGameMode(mode)
             baseLevelsButton.className = 'deselected'
             userLevelsButton.className = 'deselected'
             editModeButton.className = 'selected'
-            
+
             break;
 
     }
@@ -297,7 +302,7 @@ function exportBoard(board)
     const boardData = {
         width: board.width,
         height: board.height,
-        board_type: "base",
+        board_type: (gameMode === "userLevels" ? "user":"base"),
         cells_attributes: cells
     }
     const boardConfigObject = {
@@ -354,6 +359,7 @@ function animateSolution(solution)
 {
     let pathFindingAnimeTimeline = anime.timeline({
         easing: 'linear',
+        autoplay: false,
     })    
     
     for(let i=0; i<solution.searchPath.length; i++)
@@ -365,7 +371,7 @@ function animateSolution(solution)
             targets: cell,
             background: currentCursor.cursorColor(),
             duration: 300,
-        }, 75*i)
+        }, 1000+50*i)
 
     }
     for(let i=0; i<solution.foundPath.length; i++)
@@ -381,7 +387,7 @@ function animateSolution(solution)
         }, '-=150')
 
     }
-
+    pathFindingAnimeTimeline.play();
     
 }
 
@@ -401,10 +407,10 @@ document.addEventListener('keypress', (e) =>{
             addToAnimationQueue(mainCursor.move(1, 0));
             break;
         case "p":
-            animateSolution(mainBoard.solveMaze(mainCursor, dijkstraQueue));
+            animateSolution(mainBoard.dijsktra(mainCursor));
             break;
         case "x":
-            exportBoard(board)
+            exportBoard(mainBoard)
             break;
         case "r":
             addBoard(mainBoard, mainCursor)

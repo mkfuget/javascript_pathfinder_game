@@ -12,6 +12,9 @@ class Board {
         }
         this.startXIndex = 0;
         this.startYIndex = 0;
+        this.finishXIndex = width;
+        this.finishYIndex = height;
+
     }
     solveMaze(cursor, solveQueue)//returns one array of the squares in the path finding algorithm and one for the shortest path solution 
     {
@@ -63,12 +66,17 @@ class Board {
         } while(!solveOrder[solveOrder.length - 1].puzzleSolved && !solveQueue.empty())
         let finishCursor = solveOrder[solveOrder.length - 1];
         let currentCell = pathTravelled[finishCursor.yIndex][finishCursor.xIndex][finishCursor.bitMask];
-        let pathFound = [];
+        let pathFound = [
+            {
+                xIndex: finishCursor.xIndex,
+                yIndex: finishCursor.yIndex
+            }
+        ];
         if(finishCursor.puzzleSolved)
         {
             while(currentCell!="Start Square")
             {
-                pathFound.unshift({
+                pathFound.push({
                     xIndex: currentCell.lastXIndex,
                     yIndex: currentCell.lastYIndex
                 })
@@ -77,8 +85,17 @@ class Board {
         }
         return{
             searchPath: solveOrder,
-            foundPath: pathFound
+            foundPath: pathFound.reverse()
         } 
+    }
+    dijsktra(cursor)
+    {
+        function dijkstraComparator(cursorA, cursorB)
+        {
+            return cursorA.stepsTaken < cursorB.stepsTaken
+        }
+        let dijkstraQueue = new PriorityQueue(dijkstraComparator);
+        return this.solveMaze(cursor, dijkstraQueue)
     }
     indexToXIndex(index)
     {
