@@ -11,5 +11,10 @@
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "webpack-dev-server": "^3.11.2"
+  
+  },
+  "engines": {
+    "node": "14.16.0"
   }
+
 }
