@@ -99,6 +99,8 @@ GEM
       racc (~> 1.4)
     nokogiri (1.11.1-x86_64-linux)
       racc (~> 1.4)
+    pg (1.2.3)
+    pg (1.2.3-x64-mingw32)
     pry (0.14.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -186,6 +188,7 @@ DEPENDENCIES
   active_model_serializers
   bootsnap (>= 1.4.2)
   byebug
+  pg
   pry
   puma (~> 4.1)
   rack-cors
