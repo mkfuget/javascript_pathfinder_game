@@ -1,1 +1,2 @@
-rails db:migrate
+rake db:create
+rake db:migrate
