@@ -56,6 +56,15 @@ function importBoards()
                 userLevelCells.push(cells)
             }
           }
+          if(baseLevelCells.length === 0)
+          {
+            baseLevelCells.push(EMPTY_CELL_ARRAY)
+          }
+          if(userLevelCells.length === 0)
+          {
+            userLevelCells.push(EMPTY_CELL_ARRAY)
+          }
+
         importData = {
             userLevels: userLevelCells,
             baseLevels: baseLevelCells
