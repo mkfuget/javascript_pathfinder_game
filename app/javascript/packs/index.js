@@ -354,6 +354,7 @@ function unlockAnimateUnlockCursorKey(value)
             break;
     }
 }
+//used to ensure previous movement animations complete before this one start
 function addToAnimationQueue(moveHash)
 {
     if(moveHash.type == "success")
