@@ -1,13 +1,7 @@
 import Board from'./board/board.js'
 import Cursor from './board/cursor.js'
 import anime from 'animejs/lib/anime.es.js';
-import PriorityQueue from "./PriorityQueue.js"
 import * as cells from "./board/cell.js"
-
-import blueLockImage from '../images/blue_lock.png'
-import RedKeyImage from '../images/red_key.png'
-
-import wallCell from '../images/wall_cell.png'
 
 const MAZE_HEIGHT = 15;
 const MAZE_WIDTH = 20;
@@ -17,12 +11,12 @@ const CELL_WIDTH = 40;
 const EMPTY_CELL_ARRAY = Array(MAZE_HEIGHT*MAZE_WIDTH).fill('E')
 console.log(EMPTY_CELL_ARRAY)
 let documentMain = document.querySelector("body");
-window.mouseDown = false;
+let mouseDown = false;
 document.onmousedown = function() {
-    window.mouseDown = true;
+    mouseDown = true;
 }
 document.onmouseup = function() {
-    window.mouseDown = false;
+    mouseDown = false;
 }
 
 let userLevelIndex = 0;
@@ -30,8 +24,12 @@ let baseLevelIndex = 0;
 let userLevelMax = 0;
 let baseLevelMax = 0;
 let gameMode = "baseLevels"
-let importData = {};
-
+interface importLevels {
+    userLevels: string[][],
+    baseLevels: string[][],
+}
+let importData: importLevels;
+let darkMode = true;
 let mainBoard = new Board(MAZE_WIDTH, MAZE_HEIGHT)
 let mainCursor = new Cursor(mainBoard)
 importBoards()
@@ -65,60 +63,120 @@ function importBoards()
             userLevelCells.push(EMPTY_CELL_ARRAY)
           }
 
-        importData = {
-            userLevels: userLevelCells,
-            baseLevels: baseLevelCells
-        };
+        importData.userLevels = userLevelCells;
+        importData.baseLevels = baseLevelCells;
+
         addBoardData(mainBoard, importData.baseLevels[baseLevelIndex])
-        addBoard(mainBoard, mainCursor, importData.baseLevels[baseLevelIndex])
+        addBoard(mainBoard, mainCursor)
         userLevelMax = importData.userLevels.length;
         baseLevelMax = importData.baseLevels.length;
+        
+        const maxUserLevelElement = document.getElementById('max_user_level')
+        if(maxUserLevelElement instanceof HTMLElement)
+        {
+            maxUserLevelElement.innerHTML = String(userLevelMax);
+        }
+        const maxBaseLevelElement = document.getElementById('max_base_level')
+        if(maxBaseLevelElement instanceof HTMLElement)
+        {
+            maxBaseLevelElement.innerHTML = String(baseLevelMax);
+        }
+        const currentUserLevelElement = document.getElementById('current_user_level')
+        if(currentUserLevelElement instanceof HTMLElement)
+        {
+            currentUserLevelElement.innerHTML = String(userLevelIndex + 1);
+        }
+        const currentBaseLevelElement = document.getElementById('current_base_level')
+        if(currentBaseLevelElement instanceof HTMLElement)
+        {
+            currentBaseLevelElement.innerHTML = String(baseLevelIndex + 1);
+        }
 
-        document.getElementById('max_user_level').innerHTML = userLevelMax;
-        document.getElementById('max_base_level').innerHTML = baseLevelMax;
-        document.getElementById('current_user_level').innerHTML = userLevelIndex + 1;
-        document.getElementById('current_base_level').innerHTML = baseLevelIndex + 1;
-
-        document.getElementById('user_level_down').addEventListener("click", function(){
-            if(userLevelIndex>0)
-            {
-                addBoardData(mainBoard, importData.userLevels[--userLevelIndex])
-                addBoard(mainBoard, mainCursor)
-                document.getElementById('current_user_level').innerHTML = userLevelIndex + 1;
-            }
-        })
-        document.getElementById('user_level_up').addEventListener("click", function(){
-            if(userLevelIndex<userLevelMax-1)
-            {
-                addBoardData(mainBoard, importData.userLevels[++userLevelIndex])
-                addBoard(mainBoard, mainCursor)
-                document.getElementById('current_user_level').innerHTML = userLevelIndex + 1;
-            }
-        })
-        document.getElementById('base_level_down').addEventListener("click", function(){
-            if(baseLevelIndex>0)
-            {
-                addBoardData(mainBoard, importData.baseLevels[--baseLevelIndex])
-                addBoard(mainBoard, mainCursor)
-                document.getElementById('current_base_level').innerHTML = baseLevelIndex + 1;
-            }
-        })
-        document.getElementById('base_level_up').addEventListener("click", function(){
-            if(baseLevelIndex<baseLevelMax-1)
-            {
-                addBoardData(mainBoard, importData.baseLevels[++baseLevelIndex])
-                addBoard(mainBoard, mainCursor)
-                document.getElementById('current_base_level').innerHTML = baseLevelIndex + 1;
-            }
-        })
-        setGameMode('baseLevels')
-        document.getElementById('user_levels_button').addEventListener("click", function(){setGameMode('userLevels')});
-        document.getElementById('base_levels_button').addEventListener("click", function(){setGameMode('baseLevels')});;
-        document.getElementById('edit_mode_button').addEventListener("click", function(){setGameMode('editMode')});;
+        const userLevelDownButton = document.getElementById('user_level_down');
+        if(userLevelDownButton instanceof HTMLElement)
+        {
+            userLevelDownButton.addEventListener("click", function(){
+                if(userLevelIndex>0)
+                {
+                    addBoardData(mainBoard, importData.userLevels[--userLevelIndex])
+                    addBoard(mainBoard, mainCursor)
+                    if(currentUserLevelElement instanceof HTMLElement)
+                    {
+                        currentUserLevelElement.innerHTML = String(userLevelIndex + 1);
+                    }
+                }                            
+            })
     
+        }
+        const userLevelUpButton = document.getElementById('user_level_up');
+        if(userLevelUpButton instanceof HTMLElement)
+        {
+            userLevelUpButton.addEventListener("click", function(){
+                if(userLevelIndex<userLevelMax-1)
+                {
+                    addBoardData(mainBoard, importData.userLevels[++userLevelIndex])
+                    addBoard(mainBoard, mainCursor)
+                    if(currentUserLevelElement instanceof HTMLElement)
+                    {
+                        currentUserLevelElement.innerHTML = String(userLevelIndex + 1);
+                    }
+                }
+            })
+        }
+        const baseLevelDownButton = document.getElementById('base_level_down');
+        if(baseLevelDownButton instanceof HTMLElement)
+        {
+            baseLevelDownButton.addEventListener("click", function(){
+                if(baseLevelIndex>0)
+                {
+                    addBoardData(mainBoard, importData.baseLevels[--baseLevelIndex])
+                    addBoard(mainBoard, mainCursor)
+                    if(currentBaseLevelElement instanceof HTMLElement)
+                    {
+                        currentBaseLevelElement.innerHTML = String(baseLevelIndex + 1);
+                    }
+                }
+            })
+        }
+        const baseLevelUpButton = document.getElementById('base_level_up');
+        if(baseLevelUpButton instanceof HTMLElement)
+        {
+            baseLevelUpButton.addEventListener("click", function(){
+                if(baseLevelIndex<baseLevelMax-1)
+                {
+                    addBoardData(mainBoard, importData.baseLevels[++baseLevelIndex])
+                    addBoard(mainBoard, mainCursor)
+                    if(currentBaseLevelElement instanceof HTMLElement)
+                    {
+                        currentBaseLevelElement.innerHTML = String(baseLevelIndex + 1);
+                    }
+                }
+            })
+        }
+        setGameMode('baseLevels')
+        const UserLevelsButton = document.getElementById('user_levels_button')
+        if(UserLevelsButton instanceof HTMLElement)
+        {
+            UserLevelsButton.addEventListener("click", function(){setGameMode('userLevels')});
+        }
+        const baseLevelsButton = document.getElementById('base_levels_button')
+        if(baseLevelsButton instanceof HTMLElement)
+        {
+            baseLevelsButton.addEventListener("click", function(){setGameMode('baseLevels')});
+        }
+        const EditModeButton = document.getElementById('edit_mode_button')
+        if(EditModeButton instanceof HTMLElement)
+        {
+            EditModeButton.addEventListener("click", function(){setGameMode('editMode')});
+        }
+        const DarkModeButton = document.getElementById('dark_mode_button')
+        if(DarkModeButton instanceof HTMLElement)
+        {
+            DarkModeButton.addEventListener("click", function(){toggleDarkMode()});
+        }
       })
 }
-function mapSymbolToCell(symbol, xIndex, yIndex)
+function mapSymbolToCell(symbol: string, xIndex: number, yIndex: number)
 {
     switch(symbol)
     {
@@ -164,7 +222,7 @@ function mapSymbolToCell(symbol, xIndex, yIndex)
             break;
     }
 }
-function addCellToBoard(board, xIndex, yIndex)
+function addCellToBoard(board: Board, xIndex:number, yIndex:number)
 {
     const cellId = "cell_"+(xIndex+yIndex*MAZE_WIDTH);
     const cellImage = "cell_image_"+(xIndex+yIndex*MAZE_WIDTH);
@@ -172,27 +230,31 @@ function addCellToBoard(board, xIndex, yIndex)
     let mazeCell = document.getElementById(cellId);
     let mazeCellImage = document.getElementById(cellImage)
     const currentCell = board.boardCells[yIndex][xIndex];
-    if(currentCell.CELL_IMAGE() !== "none")
+    if(currentCell.CELL_IMAGE() !== "none" && mazeCellImage instanceof HTMLElement)
     {
         mazeCellImage.style.background = currentCell.CELL_IMAGE();
     }
-    mazeCell.style.backgroundColor = board.boardCells[yIndex][xIndex].CELL_COLOR();
+    if(mazeCell instanceof HTMLElement)
+    {
+        mazeCell.style.backgroundColor = board.boardCells[yIndex][xIndex].CELL_COLOR();
+    }
 
 }
-function clickSetCell(board, xIndex, yIndex)
+function clickSetCell(board: Board, xIndex: number, yIndex: number)
 {
+
     let symbol = document.getElementById('selected_cell').value;
     addCellData(board, symbol, board.toBoardIndex(xIndex, yIndex));
     addCellToBoard(board, xIndex, yIndex)        
 }
-function hoverClickSetCell(board, xIndex, yIndex)
+function hoverClickSetCell(board:Board, xIndex:number, yIndex:number)
 {
-    if(window.mouseDown === true)
+    if(mouseDown === true)
     {
         clickSetCell(board, xIndex, yIndex)
     }
 }
-function addCellData(board, symbol, i)
+function addCellData(board: Board, symbol: string, i: number)
 {
     let xIndex = board.indexToXIndex(i);
     let yIndex = board.indexToYIndex(i);
@@ -210,7 +272,7 @@ function addCellData(board, symbol, i)
     }
 
 }
-function addBoardData(board, cellArray)
+function addBoardData(board: Board, cellArray: string[])
 {
     for(let i=0; i<board.width*board.height; i++)
     {
@@ -219,21 +281,38 @@ function addBoardData(board, cellArray)
     }
 }
 //takes a already filled in board and adds that data to the screen
-function resetMainCursor(cursor)
+function resetMainCursor(cursor: Cursor)
 {
     cursor.reset();
     let animatedCursor = document.getElementById('animated_cursor');
-    animatedCursor.style.transform = 'translate(0px)';
-    animatedCursor.style.left = `${cursor.xIndex*CELL_WIDTH + START_X_COORDINATE}px`
-    animatedCursor.style.top = `${cursor.yIndex*CELL_WIDTH + START_Y_COORDINATE}px`
-    document.getElementById('top_left').style.backgroundColor = "gray"
-    document.getElementById('top_right').style.backgroundColor = "gray"
-    document.getElementById('bottom_left').style.backgroundColor = "gray"
-    document.getElementById('bottom_right').style.backgroundColor = "gray"
-
-
+    if(animatedCursor instanceof HTMLElement)
+    {
+        animatedCursor.style.transform = 'translate(0px)';
+        animatedCursor.style.top = `${cursor.yIndex*CELL_WIDTH + START_Y_COORDINATE}px`
+        let topLeftCursor = document.getElementById('top_left')
+        let topRightCursor = document.getElementById('top_right')
+        let bottomLeftCursor = document.getElementById('bottom_left')
+        let bottomRightCursor = document.getElementById('bottom_right')
+        if(topLeftCursor instanceof HTMLElement)
+        {
+            topLeftCursor.style.backgroundColor = "gray"
+        }
+        if(topRightCursor instanceof HTMLElement)
+        {
+            topRightCursor.style.backgroundColor = "gray"
+        }
+        if(bottomLeftCursor instanceof HTMLElement)
+        {
+            bottomLeftCursor.style.backgroundColor = "gray"
+        }
+        if(bottomRightCursor instanceof HTMLElement)
+        {
+            bottomRightCursor.style.backgroundColor = "gray"
+        }
+        animatedCursor.style.left = `${cursor.xIndex*CELL_WIDTH + START_X_COORDINATE}px`
+    }
 }
-function addBoard(board, cursor)
+function addBoard(board: Board, cursor: Cursor)
 {
     for(let i=0; i<board.width*board.height; i++)
     {
@@ -250,7 +329,7 @@ function addBoard(board, cursor)
 
 }
 
-function setGameMode(mode)
+function setGameMode(mode: string)
 {
     let userLevelsActionBar = document.getElementById('user_levels_action_bar');
     let baseLevelsActionBar = document.getElementById('base_levels_action_bar');
@@ -273,6 +352,10 @@ function setGameMode(mode)
             userLevelsButton.className = 'deselected'
             editModeButton.className = 'deselected'
 
+            addBoardData(mainBoard, importData.baseLevels[baseLevelIndex]);
+            addBoard(mainBoard, mainCursor);
+
+
             break;
 
         case 'userLevels':
@@ -285,6 +368,9 @@ function setGameMode(mode)
             baseLevelsButton.className = 'deselected'
             userLevelsButton.className = 'selected'
             editModeButton.className = 'deselected'
+
+            addBoardData(mainBoard, importData.userLevels[userLevelIndex]);
+            addBoard(mainBoard, mainCursor);
 
             break;
 
@@ -344,27 +430,49 @@ function exportBoard(board)
 
 }
 //Takes the result of an attempted move and animates it on the screen
-let animationQueue = [];
-function unlockAnimateUnlockCursorKey(value)
+interface moveHash{
+    deltaX: number;
+    deltaY: number;
+    type: string;
+    keysUnlocked: number;
+}
+let animationQueue: moveHash[];
+function unlockAnimateUnlockCursorKey(value: number)
 {
     switch(value)
     {
         case 1:
-            document.getElementById("top_left").style.backgroundColor = "red"
+            let topLeftElement = document.getElementById("top_left");
+            if(topLeftElement instanceof HTMLElement)
+            {
+                topLeftElement.style.backgroundColor = "red"
+            }
             break;
         case 2:
-            document.getElementById("top_right").style.backgroundColor = "blue"
+            let topRightlement = document.getElementById("top_right");
+            if(topRightlement instanceof HTMLElement)
+            {
+                topRightlement.style.backgroundColor = "blue"
+            }
             break;
         case 4:
-            document.getElementById("bottom_left").style.backgroundColor = "green"
+            let bottomLeftElement = document.getElementById("bottom_left");
+            if(bottomLeftElement instanceof HTMLElement)
+            {
+                bottomLeftElement.style.backgroundColor = "green"
+            }
             break;
         case 8:
-            document.getElementById("bottom_right").style.backgroundColor = "yellow"
+            let bottomRightElement = document.getElementById("bottom_right");
+            if(bottomRightElement instanceof HTMLElement)
+            {
+                bottomRightElement.style.backgroundColor = "yellow"
+            }
             break;
     }
 }
 //used to ensure previous movement animations complete before this one start
-function addToAnimationQueue(moveHash)
+function addToAnimationQueue(moveHash: moveHash)
 {
     if(moveHash.type == "success")
     {
@@ -450,7 +558,8 @@ document.addEventListener('keypress', (e) =>{
             addToAnimationQueue(mainCursor.move(1, 0));
             break;
         case "p":
-            if(document.getElementById('dijkstra').checked)
+            let dijsktraCheckBox = document.getElementById('dijkstra')
+            if(dijsktraCheckBox instanceof HTMLInputElement && dijsktraCheckBox.checked)
             {
                 animateSolution(mainBoard.dijsktra(mainCursor));
             }
@@ -482,3 +591,36 @@ document.addEventListener('keypress', (e) =>{
 
 
 
+function toggleDarkMode()
+{
+    let sidenavElement = document.getElementById('sidenav');
+    let sidenavLi = sidenavElement.querySelectorAll('li');
+    let darkModeButton = document.getElementById('dark_mode_button');
+    let headLine = sidenavElement.querySelector('.headline')
+    if(darkMode)
+    {
+        console.log(sidenavLi)
+        for(let i=0; i<sidenavLi.length; i++)
+        {
+            sidenavLi[i].style.color = "black"
+        }
+        headLine.style.color = "black"
+        sidenavElement.style.backgroundColor = "white" 
+        darkModeButton.className = "deselected"
+        darkMode = false 
+    }
+    else
+    {
+        for(let i=0; i<sidenavLi.length; i++)
+        {
+            sidenavLi[i].style.color = "white"
+        }
+        headLine.style.color = "white"
+        sidenavElement.style.backgroundColor = "black" 
+        darkModeButton.className = "selected"
+
+        darkMode = true 
+
+    }
+
+}

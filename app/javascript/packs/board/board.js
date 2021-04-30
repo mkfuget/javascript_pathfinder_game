@@ -8,7 +8,7 @@ class Board {
         this.boardCells = new Array(height);
         for(let i=0; i<height; i++)
         {
-            this.boardCells[i] = new Array(width)
+            this.boardCells[i] = new Array(width);
         }
         this.startXIndex = 0;
         this.startYIndex = 0;
@@ -18,20 +18,20 @@ class Board {
     }
     solveMaze(cursor, solveQueue)//returns one array of the squares in the path finding algorithm and one for the shortest path solution 
     {
-        let pathTravelled = new Array(this.height)
+        let pathTravelled = new Array(this.height);
         for(let i=0; i<this.height; i++)//initialize a 3-d array that corresponding to every square on the board and a third index for the bitmask value
         {
-            pathTravelled[i] = new Array(this.width)
+            pathTravelled[i] = new Array(this.width);
         }
         for(let i=0; i<this.height; i++)
         {
             for(let j=0; j<this.width; j++)
             {
-                pathTravelled[i][j] = new Array(16).fill(false)
+                pathTravelled[i][j] = new Array(16).fill(false);
             }
         }
         let solveOrder = [];
-        pathTravelled[cursor.yIndex][cursor.xIndex][cursor.bitMask] = "Start Square"
+        pathTravelled[cursor.yIndex][cursor.xIndex][cursor.bitMask] = "Start Square";
         solveQueue.push(cursor);
         do 
         {
@@ -82,7 +82,7 @@ class Board {
                     yIndex: currentCell.lastYIndex,
                     bitMask: currentCell.lastBitMask
                 })
-                currentCell = pathTravelled[currentCell.lastYIndex][currentCell.lastXIndex][currentCell.lastBitMask]    
+                currentCell = pathTravelled[currentCell.lastYIndex][currentCell.lastXIndex][currentCell.lastBitMask]    ;
             }
         }
         return{
@@ -94,23 +94,23 @@ class Board {
     {
         function dijkstraComparator(cursorA, cursorB)
         {
-            return cursorA.stepsTaken < cursorB.stepsTaken
+            return cursorA.stepsTaken < cursorB.stepsTaken;
         }
         let dijkstraQueue = new PriorityQueue(dijkstraComparator);
-        return this.solveMaze(cursor, dijkstraQueue)
+        return this.solveMaze(cursor, dijkstraQueue);
     }
     depthFirstSearch(cursor)
     {
         function depthFirstSearchComparator(cursorA, cursorB)
         {
-            return cursorA.stepsTaken > cursorB.stepsTaken
+            return cursorA.stepsTaken > cursorB.stepsTaken;
         }
         let depthFirstSearchQueue = new PriorityQueue(depthFirstSearchComparator);
-        return this.solveMaze(cursor, depthFirstSearchQueue)
+        return this.solveMaze(cursor, depthFirstSearchQueue);
     }
     manhattanDistanceToFinish(xIndex, yIndex)
     {
-        return (Math.abs(xIndex-this.finishXIndex) + Math.abs(yIndex-this.finishYIndex))
+        return (Math.abs(xIndex-this.finishXIndex) + Math.abs(yIndex-this.finishYIndex));
     }
 
     aStarSearch(cursor, weight)
@@ -123,7 +123,7 @@ class Board {
             return (aStarDistanceA === aStarDistanceB ? (cursorA.stepsTaken < cursorB.stepsTaken) : (aStarDistanceA < aStarDistanceB))
         }
         let aStarSearcQueue = new PriorityQueue(aStarSearchComparator);
-        return this.solveMaze(cursor, aStarSearcQueue)
+        return this.solveMaze(cursor, aStarSearcQueue);
     }
 
 

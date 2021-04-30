@@ -181,11 +181,11 @@ export class IceCell extends Cell
     }
     takeCursor(cursor, deltaX, deltaY)
     {
-        let xStart = cursor.xIndex
-        let yStart = cursor.yIndex
-        cursor.xIndex = this.xIndex
-        cursor.yIndex = this.yIndex
-        let result = cursor.move(deltaX, deltaY)
+        let xStart = cursor.xIndex;
+        let yStart = cursor.yIndex;
+        cursor.xIndex = this.xIndex;
+        cursor.yIndex = this.yIndex;
+        let result = cursor.move(deltaX, deltaY);
         return {
             type: "success",
             movementType: "slide",
@@ -198,7 +198,7 @@ export class IceCell extends Cell
 }
 export class StartCell extends Cell
 {
-    CELL_COLOR(){return "#FFFFFF";}
+    CELL_COLOR(){return "#FFFFFF"}
     CELL_IMAGE(){return `url(${startCellImage}`}
 
     movementAllowed(cursor)
@@ -207,10 +207,10 @@ export class StartCell extends Cell
     }
     takeCursor(cursor)
     {
-        let xStart = cursor.xIndex
-        let yStart = cursor.yIndex
-        cursor.xIndex = this.xIndex
-        cursor.yIndex = this.yIndex
+        let xStart = cursor.xIndex;
+        let yStart = cursor.yIndex;
+        cursor.xIndex = this.xIndex;
+        cursor.yIndex = this.yIndex;
         return {
             type: "success",
             movementType: "normal",
@@ -224,8 +224,8 @@ export class StartCell extends Cell
 
 export class FinishCell extends Cell
 {
-    CELL_COLOR(){return "#FFFFFF";}
-    CELL_IMAGE(){return `url(${finishCellImage}`}
+    CELL_COLOR(){return "#FFFFFF";};
+    CELL_IMAGE(){return `url(${finishCellImage}`};
 
     movementAllowed(cursor)
     {
@@ -234,10 +234,10 @@ export class FinishCell extends Cell
     takeCursor(cursor)
     {
         cursor.puzzleSolved = true;
-        let xStart = cursor.xIndex
-        let yStart = cursor.yIndex
-        cursor.xIndex = this.xIndex
-        cursor.yIndex = this.yIndex
+        let xStart = cursor.xIndex;
+        let yStart = cursor.yIndex;
+        cursor.xIndex = this.xIndex;
+        cursor.yIndex = this.yIndex;
         return {
             type: "success",
             movementType: "normal",
