@@ -169,11 +169,6 @@ function importBoards()
         {
             EditModeButton.addEventListener("click", function(){setGameMode('editMode')});
         }
-        const DarkModeButton = document.getElementById('dark_mode_button')
-        if(DarkModeButton instanceof HTMLElement)
-        {
-            DarkModeButton.addEventListener("click", function(){toggleDarkMode()});
-        }
       })
 }
 function mapSymbolToCell(symbol: string, xIndex: number, yIndex: number)
@@ -393,7 +388,7 @@ function setGameMode(mode: string)
     }
 }
 
-function exportBoard(board)
+function exportBoard(board: Board)
 {
     const url = 'api/v1/boards'
     let cells = [];
@@ -559,19 +554,23 @@ document.addEventListener('keypress', (e) =>{
             break;
         case "p":
             let dijsktraCheckBox = document.getElementById('dijkstra')
+            let depthFirstSearchCheckBox = document.getElementById('depth_first_search')
+            let aStarSearchWeakCheckBox = document.getElementById('a_star_search_weak')
+            let aStarSearchStrongCheckBox = document.getElementById('a_star_search_strong')
+
             if(dijsktraCheckBox instanceof HTMLInputElement && dijsktraCheckBox.checked)
             {
                 animateSolution(mainBoard.dijsktra(mainCursor));
             }
-            else if(document.getElementById('depth_first_search').checked)
+            else if(depthFirstSearchCheckBox instanceof HTMLInputElement && depthFirstSearchCheckBox.checked)
             {
                 animateSolution(mainBoard.depthFirstSearch(mainCursor));
             }
-            else if(document.getElementById('a_star_search_weak').checked)
+            else if(aStarSearchWeakCheckBox instanceof HTMLInputElement && aStarSearchWeakCheckBox.checked)
             {
                 animateSolution(mainBoard.aStarSearch(mainCursor, 1));
             }
-            else if(document.getElementById('a_star_search_strong').checked)
+            else if(aStarSearchStrongCheckBox instanceof HTMLInputElement && aStarSearchStrongCheckBox.checked)
             {
                 animateSolution(mainBoard.aStarSearch(mainCursor, 3));
             }
@@ -589,38 +588,3 @@ document.addEventListener('keypress', (e) =>{
 
 });
 
-
-
-function toggleDarkMode()
-{
-    let sidenavElement = document.getElementById('sidenav');
-    let sidenavLi = sidenavElement.querySelectorAll('li');
-    let darkModeButton = document.getElementById('dark_mode_button');
-    let headLine = sidenavElement.querySelector('.headline')
-    if(darkMode)
-    {
-        console.log(sidenavLi)
-        for(let i=0; i<sidenavLi.length; i++)
-        {
-            sidenavLi[i].style.color = "black"
-        }
-        headLine.style.color = "black"
-        sidenavElement.style.backgroundColor = "white" 
-        darkModeButton.className = "deselected"
-        darkMode = false 
-    }
-    else
-    {
-        for(let i=0; i<sidenavLi.length; i++)
-        {
-            sidenavLi[i].style.color = "white"
-        }
-        headLine.style.color = "white"
-        sidenavElement.style.backgroundColor = "black" 
-        darkModeButton.className = "selected"
-
-        darkMode = true 
-
-    }
-
-}
