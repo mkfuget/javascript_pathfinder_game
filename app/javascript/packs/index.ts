@@ -225,13 +225,13 @@ function addCellToBoard(board: Board, xIndex:number, yIndex:number)
     let mazeCell = document.getElementById(cellId);
     let mazeCellImage = document.getElementById(cellImage)
     const currentCell = board.boardCells[yIndex][xIndex];
-    if(currentCell.CELL_IMAGE() !== "none" && mazeCellImage instanceof HTMLElement)
+    if(currentCell.CELL_IMAGE !== "none" && mazeCellImage instanceof HTMLElement)
     {
-        mazeCellImage.style.background = currentCell.CELL_IMAGE();
+        mazeCellImage.style.background = currentCell.CELL_IMAGE;
     }
     if(mazeCell instanceof HTMLElement)
     {
-        mazeCell.style.backgroundColor = board.boardCells[yIndex][xIndex].CELL_COLOR();
+        mazeCell.style.backgroundColor = board.boardCells[yIndex][xIndex].CELL_COLOR;
     }
 
 }
@@ -467,7 +467,7 @@ function unlockAnimateUnlockCursorKey(value: number)
     }
 }
 //used to ensure previous movement animations complete before this one start
-function addToAnimationQueue(moveHash: moveHash)
+function addToAnimationQueue(moveHash: movementResult)
 {
     if(moveHash.type == "success")
     {
