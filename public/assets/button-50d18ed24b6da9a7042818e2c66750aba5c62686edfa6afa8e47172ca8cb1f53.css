@@ -1,0 +1,23 @@
+/* line 1, app/assets/stylesheets/button.scss */
+button {
+  height: 50px;
+  width: 200px;
+  background-color: #066585;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+/* line 15, app/assets/stylesheets/button.scss */
+.selected {
+  background-color: #078bb8;
+}
+
+/* line 20, app/assets/stylesheets/button.scss */
+.deselected {
+  background-color: #066585;
+}

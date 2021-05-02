@@ -1,0 +1,33 @@
+/* line 1, app/assets/stylesheets/arrow.scss */
+i {
+  border: solid #3e13b6;
+  border-width: 0 6px 6px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+/* line 7, app/assets/stylesheets/arrow.scss */
+p {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* line 11, app/assets/stylesheets/arrow.scss */
+.rightArrow {
+  transform: rotate(-45deg);
+}
+
+/* line 14, app/assets/stylesheets/arrow.scss */
+.leftArrow {
+  transform: rotate(135deg);
+}
+
+/* line 17, app/assets/stylesheets/arrow.scss */
+.upArrow {
+  transform: rotate(-135deg);
+}
+
+/* line 20, app/assets/stylesheets/arrow.scss */
+.downArrow {
+  transform: rotate(45deg);
+}

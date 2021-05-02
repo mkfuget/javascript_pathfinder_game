@@ -1,0 +1,192 @@
+/* line 1, app/assets/stylesheets/arrow.scss */
+i {
+  border: solid #3e13b6;
+  border-width: 0 6px 6px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+/* line 7, app/assets/stylesheets/arrow.scss */
+p {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* line 11, app/assets/stylesheets/arrow.scss */
+.rightArrow {
+  transform: rotate(-45deg);
+}
+
+/* line 14, app/assets/stylesheets/arrow.scss */
+.leftArrow {
+  transform: rotate(135deg);
+}
+
+/* line 17, app/assets/stylesheets/arrow.scss */
+.upArrow {
+  transform: rotate(-135deg);
+}
+
+/* line 20, app/assets/stylesheets/arrow.scss */
+.downArrow {
+  transform: rotate(45deg);
+}
+/* line 1, app/assets/stylesheets/button.scss */
+button {
+  height: 50px;
+  width: 200px;
+  background-color: #066585;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+/* line 15, app/assets/stylesheets/button.scss */
+.selected {
+  background-color: #078bb8;
+}
+
+/* line 20, app/assets/stylesheets/button.scss */
+.deselected {
+  background-color: #066585;
+}
+/* line 1, app/assets/stylesheets/sidebar.scss */
+.sidenav {
+  height: 100%;
+  /* Full-height: remove this if you want "auto" height */
+  width: 200px;
+  /* Set the width of the sidebar */
+  position: fixed;
+  /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1;
+  /* Stay on top */
+  top: 0;
+  /* Stay at the top */
+  left: 0;
+  background-color: #111;
+  /* Black */
+  overflow-x: hidden;
+  /* Disable horizontal scroll */
+  padding-top: 20px;
+}
+
+/* line 12, app/assets/stylesheets/sidebar.scss */
+li {
+  color: white;
+  font-size: 20px;
+  padding-right: 20px;
+}
+
+/* line 17, app/assets/stylesheets/sidebar.scss */
+.inner_content {
+  margin-left: 200px;
+  /* Same as the width of the sidebar */
+  padding: 0px 10px;
+}
+
+/* line 21, app/assets/stylesheets/sidebar.scss */
+.headline {
+  color: white;
+  text-decoration: underline;
+  font-size: 36px;
+  text-align: center;
+}
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+
+
+ */
+/* Style inputs */
+body{
+    background-color: rgb(139, 144, 153);
+}
+
+table{
+    table-layout: fixed;
+
+    border-collapse: collapse;
+    border: 2px solid black;
+    position: relative;
+    margin: 5px;
+    }
+    
+table td{
+    border: 2px solid black;
+    width:36px;
+    height:36px;
+
+}
+
+.cell_background_color{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: -1;  
+    width:40px;
+    height:40px;
+}
+.cell_image{
+    position: relative;
+    left: 0px;
+    top: 0px;
+    z-index: 0;  
+    width:36px;
+    height:36px;
+    margin: 0px;
+    padding: 0px;
+    pointer-events: none;
+
+}
+
+#animated_cursor {
+    width: 20px;
+    height: 20px;
+    grid-template-columns: 10px 10px;
+
+    background-color: gray;
+    position: relative;
+    display:grid;
+    grid-row: auto auto;
+
+    z-index: 1;
+}
+div.cursor_quarter {
+    z-index: 2;
+}
+#top_left {
+    background-color: red;
+}
+#top_right {
+    background-color: blue;
+}
+#bottom_left {
+    background-color: green;
+}
+#bottom_right {
+    background-color: yellow;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 900px 100px;
+
+  }
+  .grid-item {
+      border: 1px solid black;
+  }
+  
+  
