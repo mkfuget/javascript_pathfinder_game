@@ -1,28 +1,20 @@
-import redKeyImage from '../../images/red_key.png'
-import blueKeyImage from '../../images/blue_key.png'
-import greenKeyImage from '../../images/green_key.png'
-import yellowKeyImage from '../../images/yellow_key.png'
 
-import redLockImage from '../../images/red_lock.png'
-import blueLockImage from '../../images/blue_lock.png'
-import greenLockImage from '../../images/green_lock.png'
-import yellowLockImage from '../../images/yellow_lock.png'
-
-import iceCellImage from '../../images/ice_cell.png'
-import wallCellImage from '../../images/wall_cell.png'
-import emptyCellImage from '../../images/empty_cell.png'
-import startCellImage from '../../images/start_cell.png'
-import finishCellImage from '../../images/finish_cell.png'
+const redKeyImage = require('../../images/red_key.png') as string;
+const blueKeyImage = require('../../images/blue_key.png') as string;
+const greenKeyImage = require('../../images/green_key.png') as string;
+const yellowKeyImage = require('../../images/yellow_key.png') as string;
+const redLockImage = require('../../images/red_lock.png') as string;
+const blueLockImage = require('../../images/blue_lock.png') as string;
+const greenLockImage = require('../../images/green_lock.png') as string;
+const yellowLockImage = require('../../images/yellow_lock.png') as string;
+const iceCellImage = require('../../images/ice_cell.png') as string;
+const wallCellImage = require('../../images/wall_cell.png') as string;
+const emptyCellImage = require('../../images/empty_cell.png') as string;
+const startCellImage = require('../../images/start_cell.png') as string;
+const finishCellImage = require('../../images/finish_cell.png') as string;
 
 import Cursor from './cursor'
-interface movementResult {
-    type: string;
-    movementType: string;
-    deltaX: number;
-    deltaY: number;
-    keysUnlocked: string | number;
-
-}
+import {MovementResult} from './cursor'
 export abstract class Cell
 {
     xIndex: number;
@@ -36,7 +28,7 @@ export abstract class Cell
         this.yIndex = yIndex
         this.type = type
     }
-    public abstract takeCursor(cursor: Cursor, deltaX?: number, deltaY?: number): movementResult
+    public abstract takeCursor(cursor: Cursor, deltaX?: number, deltaY?: number): MovementResult
     
     
 }
@@ -51,7 +43,7 @@ export class EmptyCell extends Cell
         return true;
     }
 
-    takeCursor(cursor: Cursor): movementResult
+    takeCursor(cursor: Cursor): MovementResult
     {
         let xStart = cursor.xIndex
         let yStart = cursor.yIndex
@@ -75,7 +67,7 @@ export class WallCell extends Cell
     {
         return false;
     }
-    takeCursor(cursor: Cursor): movementResult
+    takeCursor(cursor: Cursor): MovementResult
     {
         return {
             type: "failure",
@@ -96,7 +88,7 @@ export abstract class LockCell extends Cell
     {
         return ((cursor.bitMask & this.BIT_VALUE) == this.BIT_VALUE);
     }
-    takeCursor(cursor: Cursor): movementResult
+    takeCursor(cursor: Cursor): MovementResult
     {
         if(!this.movementAllowed(cursor))
         {
@@ -125,11 +117,11 @@ export abstract class LockCell extends Cell
 export abstract class KeyCell extends Cell
 {
     readonly abstract BIT_VALUE: number;
-    movementAllowed(cursor: Cursor)
+    movementAllowed(cursor: Cursor): boolean
     {
         return true;
     }
-    takeCursor(cursor: Cursor)
+    takeCursor(cursor: Cursor): MovementResult
     {
         cursor.bitMask |= this.BIT_VALUE
         let xStart = cursor.xIndex
@@ -205,7 +197,7 @@ export class IceCell extends Cell
     {
         return true;
     }
-    takeCursor(cursor: Cursor, deltaX: number, deltaY: number): movementResult
+    takeCursor(cursor: Cursor, deltaX: number, deltaY: number): MovementResult
     {
         let xStart = cursor.xIndex;
         let yStart = cursor.yIndex;
@@ -227,11 +219,11 @@ export class StartCell extends Cell
     readonly CELL_COLOR = "#FFFFFF"
     readonly CELL_IMAGE = `url(${startCellImage}`
 
-    movementAllowed(cursor: Cursor)
+    movementAllowed(cursor: Cursor): boolean
     {
         return true;
     }
-    takeCursor(cursor: Cursor)
+    takeCursor(cursor: Cursor): MovementResult
     {
         let xStart = cursor.xIndex;
         let yStart = cursor.yIndex;
@@ -253,11 +245,11 @@ export class FinishCell extends Cell
     readonly CELL_COLOR = "#FFFFFF";
     readonly CELL_IMAGE = `url(${finishCellImage}`
 
-    movementAllowed(cursor: Cursor)
+    movementAllowed(cursor: Cursor): boolean
     {
         return true;
     }
-    takeCursor(cursor: Cursor)
+    takeCursor(cursor: Cursor): MovementResult
     {
         cursor.puzzleSolved = true;
         let xStart = cursor.xIndex;

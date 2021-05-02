@@ -1,42 +1,44 @@
-class PriorityQueue
+class PriorityQueue<T>
 {
-    constructor(comparator = function(a, b){
+    heap: T[]
+    comparator: (a: T, b: T) => boolean
+    constructor(comparator = (a: any, b: any) => {
         return a > b
     })
     {
         this.heap = [];
         this.comparator = comparator
     }
-    size()
+    size(): number
     {
         return this.heap.length;
     }
-    empty()
+    empty(): boolean
     {
         return this.heap.length === 0;
     }
-    parent(i)
+    parent(i: number): number
     {
         return Math.floor((i-1)/2);
     }
-    left(i)
+    left(i: number): number
     {
         return (2*i + 1)
     }
-    right(i)
+    right(i: number): number
     {
         return 2*(i+ 1)
     }
-    peek()
+    peek():T
     {
         return this.heap[0]
     }
-    push(value)
+    push(value: T)
     {
         this.heap.push(value)
         this.bubbleUp(this.size() - 1)
     }
-    pop()
+    pop(): T
     {
         const outValue  = this.peek();
         this.swap(0, this.size() - 1);
@@ -44,11 +46,11 @@ class PriorityQueue
         this.bubbleDown(0);
         return outValue;
     }
-    swap(i, j)
+    swap(i: number, j: number)
     {
         [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]]
     }
-    bubbleUp(i)
+    bubbleUp(i: number)
     {
         while(i > 0 && this.comparator(this.heap[i], this.heap[this.parent(i)]))
         {
@@ -56,7 +58,7 @@ class PriorityQueue
             i = this.parent(i)
         }
     }
-    bubbleDown(i)
+    bubbleDown(i: number)
     {
         while (this.left(i) < this.size())
         {

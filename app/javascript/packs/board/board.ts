@@ -37,7 +37,7 @@ class Board {
         this.finishYIndex = height;
 
     }
-    solveMaze(cursor: Cursor, solveQueue: PriorityQueue): pathSolution//returns one array of the squares in the path finding algorithm and one for the shortest path solution 
+    solveMaze(cursor: Cursor, solveQueue: PriorityQueue<Cursor>): pathSolution//returns one array of the squares in the path finding algorithm and one for the shortest path solution 
     {
         let pathTravelled: pathToCell[][][] = new Array(this.height);
         for(let i=0; i<this.height; i++)//initialize a 3-d array that corresponding to every square on the board and a third index for the bitmask value
@@ -122,7 +122,7 @@ class Board {
         {
             return cursorA.stepsTaken < cursorB.stepsTaken;
         }
-        let dijkstraQueue = new PriorityQueue(dijkstraComparator);
+        let dijkstraQueue = new PriorityQueue<Cursor>(dijkstraComparator);
         return this.solveMaze(cursor, dijkstraQueue);
     }
     depthFirstSearch(cursor: Cursor)
@@ -131,7 +131,7 @@ class Board {
         {
             return cursorA.stepsTaken > cursorB.stepsTaken;
         }
-        let depthFirstSearchQueue = new PriorityQueue(depthFirstSearchComparator);
+        let depthFirstSearchQueue = new PriorityQueue<Cursor>(depthFirstSearchComparator);
         return this.solveMaze(cursor, depthFirstSearchQueue);
     }
     manhattanDistanceToFinish(xIndex: number, yIndex: number)
@@ -148,8 +148,8 @@ class Board {
 
             return (aStarDistanceA === aStarDistanceB ? (cursorA.stepsTaken < cursorB.stepsTaken) : (aStarDistanceA < aStarDistanceB))
         }
-        let aStarSearcQueue = new PriorityQueue(aStarSearchComparator);
-        return this.solveMaze(cursor, aStarSearcQueue);
+        let aStarSearchQueue = new PriorityQueue<Cursor>(aStarSearchComparator);
+        return this.solveMaze(cursor, aStarSearchQueue);
     }
 
 

@@ -1,5 +1,5 @@
 import type Board from './board'
-interface movementResult {
+export interface MovementResult {
     type: string;
     movementType: string;
     deltaX: number;
@@ -29,7 +29,7 @@ class Cursor {
     boardHeight(){return this.board.height}
     boardWidth(){return this.board.width}
 
-    move(deltaX: number, deltaY: number): movementResult
+    move(deltaX: number, deltaY: number): MovementResult
     {
         
         const xDestination = this.xIndex + deltaX

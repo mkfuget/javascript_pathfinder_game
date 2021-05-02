@@ -1,6 +1,9 @@
 import Board from'./board/board.js'
+import {pathSolution} from'./board/board.js'
+
 import Cursor from './board/cursor.js'
-import anime from 'animejs/lib/anime.es.js';
+import {MovementResult} from './board/cursor.js'
+const anime = require('animejs/lib/anime.es.js')
 import * as cells from "./board/cell.js"
 
 const MAZE_HEIGHT = 15;
@@ -9,8 +12,6 @@ const START_X_COORDINATE = 15;
 const START_Y_COORDINATE = 35;
 const CELL_WIDTH = 40;
 const EMPTY_CELL_ARRAY = Array(MAZE_HEIGHT*MAZE_WIDTH).fill('E')
-console.log(EMPTY_CELL_ARRAY)
-let documentMain = document.querySelector("body");
 let mouseDown = false;
 document.onmousedown = function() {
     mouseDown = true;
@@ -40,11 +41,13 @@ function importBoards()
     .then(function(response) {
         return response.json();
       }).then(function(json) {
-          let userLevelCells = [];
-          let baseLevelCells = [];
+          let userLevelCells: string[][] = [];
+          let baseLevelCells: string[][] = [];
           for(let i=0; i<json.length; i++)
           {
-            let cells = json[i].cells.map(x => x.cell_type)
+            let cells = json[i].cells.map(function(val: any, index:number ){
+                return val.cell_type;
+            })
             if(json[i].board_type === "base")
             {
                 baseLevelCells.push(cells)
@@ -171,7 +174,7 @@ function importBoards()
         }
       })
 }
-function mapSymbolToCell(symbol: string, xIndex: number, yIndex: number)
+function mapSymbolToCell(symbol: string, xIndex: number, yIndex: number): cells.Cell
 {
     switch(symbol)
     {
@@ -205,7 +208,6 @@ function mapSymbolToCell(symbol: string, xIndex: number, yIndex: number)
         case "Y":
             return new cells.YellowLockCell(xIndex, yIndex, symbol)
             break;
-
         case "I":
             return new cells.IceCell(xIndex, yIndex, symbol)
             break;
@@ -215,6 +217,10 @@ function mapSymbolToCell(symbol: string, xIndex: number, yIndex: number)
         case "S":
             return new cells.StartCell(xIndex, yIndex, symbol)
             break;
+        default:             
+            return new cells.EmptyCell(xIndex, yIndex, symbol)
+            break;
+
     }
 }
 function addCellToBoard(board: Board, xIndex:number, yIndex:number)
@@ -238,9 +244,13 @@ function addCellToBoard(board: Board, xIndex:number, yIndex:number)
 function clickSetCell(board: Board, xIndex: number, yIndex: number)
 {
 
-    let symbol = document.getElementById('selected_cell').value;
-    addCellData(board, symbol, board.toBoardIndex(xIndex, yIndex));
-    addCellToBoard(board, xIndex, yIndex)        
+    const selectedCell = document.getElementById('selected_cell');
+    if(selectedCell instanceof HTMLInputElement)
+    {
+        let symbol = selectedCell.value;
+        addCellData(board, symbol, board.toBoardIndex(xIndex, yIndex));
+        addCellToBoard(board, xIndex, yIndex)            
+    }
 }
 function hoverClickSetCell(board:Board, xIndex:number, yIndex:number)
 {
@@ -315,9 +325,11 @@ function addBoard(board: Board, cursor: Cursor)
         let mazeCell = document.getElementById(cellId);
         let xIndex = mainBoard.indexToXIndex(i);
         let yIndex = mainBoard.indexToYIndex(i);
-
-        mazeCell.addEventListener("mouseenter", function(){hoverClickSetCell(board, xIndex, yIndex)});
-        mazeCell.addEventListener("mousedown", function(){clickSetCell(board, xIndex, yIndex)});
+        if(mazeCell instanceof HTMLElement)
+        {
+            mazeCell.addEventListener("mouseenter", function(){hoverClickSetCell(board, xIndex, yIndex)});
+            mazeCell.addEventListener("mousedown", function(){clickSetCell(board, xIndex, yIndex)});    
+        }
         addCellToBoard(board, xIndex, yIndex)
     }
     resetMainCursor(cursor)
@@ -333,58 +345,64 @@ function setGameMode(mode: string)
     let userLevelsButton = document.getElementById('user_levels_button');
     let baseLevelsButton = document.getElementById('base_levels_button');
     let editModeButton = document.getElementById('edit_mode_button');
-
-    switch(mode)
+    if(!(userLevelsActionBar instanceof HTMLElement && baseLevelsActionBar instanceof HTMLElement && editModeActionBar instanceof HTMLElement && userLevelsButton instanceof HTMLElement && baseLevelsButton instanceof HTMLElement && editModeButton instanceof HTMLElement))
     {
-        case 'baseLevels': 
-            gameMode = 'baseLevels'
+        console.log("Missing Game Mode Elements")
+    }
+    else 
+    {
+        switch(mode)
+        {
+            case 'baseLevels': 
+                gameMode = 'baseLevels'
 
-            baseLevelsActionBar.style.display = 'block'
-            userLevelsActionBar.style.display= 'none'
-            editModeActionBar.style.display = 'none'
+                baseLevelsActionBar.style.display = 'block'
+                userLevelsActionBar.style.display= 'none'
+                editModeActionBar.style.display = 'none'
 
-            baseLevelsButton.className = 'selected'
-            userLevelsButton.className = 'deselected'
-            editModeButton.className = 'deselected'
+                baseLevelsButton.className = 'selected'
+                userLevelsButton.className = 'deselected'
+                editModeButton.className = 'deselected'
 
-            addBoardData(mainBoard, importData.baseLevels[baseLevelIndex]);
-            addBoard(mainBoard, mainCursor);
+                addBoardData(mainBoard, importData.baseLevels[baseLevelIndex]);
+                addBoard(mainBoard, mainCursor);
 
 
-            break;
+                break;
 
-        case 'userLevels':
-            gameMode = 'userLevels'
+            case 'userLevels':
+                gameMode = 'userLevels'
 
-            baseLevelsActionBar.style.display = 'none'
-            userLevelsActionBar.style.display= 'block'
-            editModeActionBar.style.display = 'none'
+                baseLevelsActionBar.style.display = 'none'
+                userLevelsActionBar.style.display= 'block'
+                editModeActionBar.style.display = 'none'
 
-            baseLevelsButton.className = 'deselected'
-            userLevelsButton.className = 'selected'
-            editModeButton.className = 'deselected'
+                baseLevelsButton.className = 'deselected'
+                userLevelsButton.className = 'selected'
+                editModeButton.className = 'deselected'
 
-            addBoardData(mainBoard, importData.userLevels[userLevelIndex]);
-            addBoard(mainBoard, mainCursor);
+                addBoardData(mainBoard, importData.userLevels[userLevelIndex]);
+                addBoard(mainBoard, mainCursor);
 
-            break;
+                break;
 
-        case 'editMode':
-            gameMode = 'editMode'
+            case 'editMode':
+                gameMode = 'editMode'
 
-            baseLevelsActionBar.style.display = 'none'
-            userLevelsActionBar.style.display= 'none'
-            editModeActionBar.style.display = 'block'
+                baseLevelsActionBar.style.display = 'none'
+                userLevelsActionBar.style.display= 'none'
+                editModeActionBar.style.display = 'block'
 
-            baseLevelsButton.className = 'deselected'
-            userLevelsButton.className = 'deselected'
-            editModeButton.className = 'selected'
+                baseLevelsButton.className = 'deselected'
+                userLevelsButton.className = 'deselected'
+                editModeButton.className = 'selected'
 
-            addBoardData(mainBoard, EMPTY_CELL_ARRAY);
-            addBoard(mainBoard, mainCursor);
+                addBoardData(mainBoard, EMPTY_CELL_ARRAY);
+                addBoard(mainBoard, mainCursor);
 
-            break;
+                break;
 
+        }
     }
 }
 
@@ -431,8 +449,8 @@ interface moveHash{
     type: string;
     keysUnlocked: number;
 }
-let animationQueue: moveHash[];
-function unlockAnimateUnlockCursorKey(value: number)
+let animationQueue: MovementResult[];
+function unlockAnimateUnlockCursorKey(value: number | string)
 {
     switch(value)
     {
@@ -467,7 +485,7 @@ function unlockAnimateUnlockCursorKey(value: number)
     }
 }
 //used to ensure previous movement animations complete before this one start
-function addToAnimationQueue(moveHash: movementResult)
+function addToAnimationQueue(moveHash: MovementResult)
 {
     if(moveHash.type == "success")
     {
@@ -501,7 +519,7 @@ function dequeueAnimationQueue()
         }
     })
 }
-function animateSolution(solution)
+function animateSolution(solution: pathSolution)
 {
     let pathFindingAnimeTimeline = anime.timeline({
         easing: 'linear',
@@ -587,4 +605,3 @@ document.addEventListener('keypress', (e) =>{
 
 
 });
-
