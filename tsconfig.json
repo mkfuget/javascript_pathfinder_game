@@ -9,7 +9,7 @@
     // "jsx": "preserve",                     /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
     // "declaration": true,                   /* Generates corresponding '.d.ts' file. */
     // "sourceMap": true,                     /* Generates corresponding '.map' file. */
-    // "outFile": "./",                       /* Concatenate and emit output to single file. */
+    //"outFile": "./app/javascript",                       /* Concatenate and emit output to single file. */
     "outDir": "./app/javascript/dist",                        /* Redirect output structure to the directory. */
     "rootDir": "./app/javascript",                       /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
     // "removeComments": true,                /* Do not emit comments to output. */
@@ -55,4 +55,13 @@
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
   },
   "include": ["app/javascript"],
+  "files": [
+    "app/assets/javascripts/index.ts",
+    "app/assets/javascripts/PriorityQueue.ts",
+    "app/assets/javascripts/board/board.ts",
+    "app/assets/javascripts/board/cell.ts",
+    "app/assets/javascripts/board/cursor.ts"
+
+]
+
 }
