@@ -71,6 +71,8 @@ development:
     watch_options:
       ignored: '**/node_modules/**'
 
+build:
+    <<: *default
 
 test:
   <<: *default
